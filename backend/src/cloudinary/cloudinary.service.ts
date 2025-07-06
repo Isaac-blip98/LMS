@@ -24,6 +24,7 @@ export class CloudinaryService {
     if (mimetype) {
       if (mimetype.startsWith('image/')) resourceType = 'image';
       else if (mimetype.startsWith('video/')) resourceType = 'video';
+      else if (mimetype === 'application/pdf') resourceType = 'image';
       else resourceType = 'raw';
     }
     return new Promise((resolve, reject) => {
@@ -38,12 +39,15 @@ export class CloudinaryService {
     });
   }
 
-  async uploadFromUrl(url: string, folder: string, publicId?: string): Promise<UploadApiResponse> {
-    console.log('CloudinaryService.uploadFromUrl', { url, folder, publicId });
+  async uploadFromUrl(url: string, folder: string, publicId?: string, mimetype?: string): Promise<UploadApiResponse> {
+    console.log('CloudinaryService.uploadFromUrl', { url, folder, publicId, mimetype });
     
     const options: Record<string, unknown> = { folder };
     if (publicId) {
       options.public_id = publicId;
+    }
+    if ((mimetype && mimetype === 'application/pdf') || url.toLowerCase().endsWith('.pdf')) {
+      options.resource_type = 'image';
     }
 
     return new Promise((resolve, reject) => {
@@ -59,9 +63,9 @@ export class CloudinaryService {
     return this.uploadFromUrl(url, 'lessons', `lesson_${lessonId}`);
   }
 
-  async uploadCertificate(url: string, certificateId: string): Promise<UploadApiResponse> {
-    console.log('CloudinaryService.uploadCertificate', { url, certificateId });
-    return this.uploadFromUrl(url, 'certificates', `certificate_${certificateId}`);
+  async uploadCertificate(url: string, certificateId: string, mimetype?: string): Promise<UploadApiResponse> {
+    console.log('CloudinaryService.uploadCertificate', { url, certificateId, mimetype });
+    return this.uploadFromUrl(url, 'certificates', `certificate_${certificateId}`, mimetype);
   }
 
   async uploadCourseImage(image: Buffer | string, courseId: string): Promise<UploadApiResponse> {

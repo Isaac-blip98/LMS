@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { InstructorService, DashboardStats, CourseAnalytics, ModuleProgress, StudentProgress, CertificateStats, Certificate, QuizAttempt, StudentProgressAnalytics } from '../../Services/instructor.service';
+import { InstructorService, DashboardStats, CourseAnalytics, ModuleProgress, StudentProgress, CertificateStats, Certificate, QuizAttempt, StudentProgressAnalytics, ModuleProgressDetails, LessonCompletionStats } from '../../Services/instructor.service';
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-instructor-dashboard',
@@ -11,7 +12,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './instructor-dashboard.component.html',
   styleUrls: ['./instructor-dashboard.component.css']
 })
-export class InstructorDashboardComponent implements OnInit {
+export class InstructorDashboardComponent implements OnInit, OnDestroy {
   dashboardStats: DashboardStats | null = null;
   courses: any[] = [];
   selectedCourse: any = null;
@@ -39,10 +40,27 @@ export class InstructorDashboardComponent implements OnInit {
   engagementChartData: any[] = [];
   progressChartData: any[] = [];
 
+  // Module/Lesson Details state
+  selectedModuleId: string = '';
+  selectedEnrollmentId: string = '';
+  selectedLessonId: string = '';
+  moduleProgressDetails: ModuleProgressDetails | null = null;
+  lessonCompletionStats: LessonCompletionStats | null = null;
+
+  private dashboardRefreshSub?: Subscription;
+
   constructor(private instructorService: InstructorService) {}
 
   ngOnInit() {
     this.loadDashboardData();
+    // Listen for dashboard refresh events
+    this.dashboardRefreshSub = this.instructorService.dashboardRefresh$.subscribe(() => {
+      this.loadDashboardData();
+    });
+  }
+
+  ngOnDestroy() {
+    this.dashboardRefreshSub?.unsubscribe();
   }
 
   loadDashboardData() {
@@ -151,12 +169,19 @@ export class InstructorDashboardComponent implements OnInit {
         this.studentCertificates = [];
       }
     }
+    if (tab === 'details') {
+      this.moduleProgressDetails = null;
+      this.lessonCompletionStats = null;
+      this.selectedModuleId = '';
+      this.selectedEnrollmentId = '';
+      this.selectedLessonId = '';
+    }
   }
 
   updateProgressChart() {
     this.progressChartData = this.moduleProgress.map(module => ({
       name: module.moduleTitle,
-      value: module.completionRate
+      value: this.getSafeCompletionRate(module)
     }));
   }
 
@@ -361,6 +386,48 @@ export class InstructorDashboardComponent implements OnInit {
     if (!this.quizAttempts || this.quizAttempts.length === 0) return 0;
     const total = this.quizAttempts.reduce((sum, a) => sum + (a.score || 0), 0);
     return Math.round(total / this.quizAttempts.length);
+  }
+
+  onModuleDetailSelect(moduleId: string, enrollmentId: string) {
+    this.selectedModuleId = moduleId;
+    this.selectedEnrollmentId = enrollmentId;
+    this.loadModuleProgressDetails();
+  }
+
+  loadModuleProgressDetails() {
+    if (!this.selectedModuleId || !this.selectedEnrollmentId) return;
+    this.instructorService.getModuleProgressDetails(this.selectedModuleId, this.selectedEnrollmentId).subscribe({
+      next: (details) => {
+        this.moduleProgressDetails = details;
+      },
+      error: (error) => {
+        console.error('Error loading module progress details:', error);
+        this.moduleProgressDetails = null;
+      }
+    });
+  }
+
+  onLessonDetailSelect(lessonId: string, courseId: string) {
+    this.selectedLessonId = lessonId;
+    this.loadLessonCompletionStats(courseId);
+  }
+
+  loadLessonCompletionStats(courseId: string) {
+    if (!this.selectedLessonId || !courseId) return;
+    this.instructorService.getLessonCompletionStats(this.selectedLessonId, courseId).subscribe({
+      next: (stats) => {
+        this.lessonCompletionStats = stats;
+      },
+      error: (error) => {
+        console.error('Error loading lesson completion stats:', error);
+        this.lessonCompletionStats = null;
+      }
+    });
+  }
+
+  getSafeCompletionRate(module: ModuleProgress): number {
+    if (!module.totalLessons || module.totalLessons === 0) return 0;
+    return Math.round((module.completedLessons / module.totalLessons) * 100);
   }
 
 } 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 export interface InstructorStats {
   totalCourses: number;
@@ -178,6 +178,9 @@ export interface StudentProgressAnalytics {
 @Injectable({ providedIn: 'root' })
 export class InstructorService {
   private baseUrl = 'http://localhost:3000';
+
+  // Event bus for dashboard refresh
+  public dashboardRefresh$ = new Subject<void>();
 
   constructor(private http: HttpClient) {}
 

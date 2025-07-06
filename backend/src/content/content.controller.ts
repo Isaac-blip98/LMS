@@ -70,8 +70,8 @@ export class ContentController {
 
   // Modules
   @Get('courses/:courseId/modules')
-  @Roles(Role.ADMIN, Role.INSTRUCTOR)
-  @ApiOperation({ summary: 'Get modules for a course (Admin/Instructor only)' })
+  @UseGuards()
+  @ApiOperation({ summary: 'Get modules for a course (public)' })
   @ApiResponse({ status: 200, description: 'Modules retrieved successfully' })
   getModulesByCourse(@Param('courseId') courseId: string) {
     return this.contentService.getModulesByCourse(courseId);
@@ -103,8 +103,8 @@ export class ContentController {
 
   // Lessons
   @Get('modules/:moduleId/lessons')
-  @Roles(Role.INSTRUCTOR)
-  @ApiOperation({ summary: 'Get lessons for a module (Instructor only)' })
+  @UseGuards()
+  @ApiOperation({ summary: 'Get lessons for a module (public)' })
   @ApiResponse({ status: 200, description: 'Lessons retrieved successfully' })
   getLessonsByModule(@Param('moduleId') moduleId: string) {
     return this.contentService.getLessonsByModule(moduleId);

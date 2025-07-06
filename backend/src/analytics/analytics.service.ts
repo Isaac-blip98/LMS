@@ -186,7 +186,6 @@ export class AnalyticsService {
   async getCourseEngagement(courseId: string, period: string = 'month') {
     const now = new Date();
     let startDate: Date;
-
     switch (period) {
       case 'week':
         startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -211,8 +210,7 @@ export class AnalyticsService {
       this.prisma.progress.count({
         where: {
           enrollment: { courseId },
-          completed: true,
-          // Note: Progress doesn't have timestamp, so we'll count all completions
+          completed: true
         }
       }),
       this.prisma.review.count({

@@ -228,4 +228,18 @@ export class ProgressController {
   ) {
     return this.progressService.getStudentProgressAnalytics(userId, 'month');
   }
+
+  @Get('module/:moduleId/progress')
+  @Roles(Role.INSTRUCTOR, Role.ADMIN)
+  @ApiParam({ name: 'moduleId', type: String })
+  @ApiQuery({ name: 'enrollmentId', required: true, type: String })
+  @ApiOperation({ summary: 'Get module progress details by module and enrollment (Instructor/Admin only)' })
+  @ApiResponse({ status: 200, description: 'Module progress details' })
+  getModuleProgressByEnrollment(
+    @Param('moduleId') moduleId: string,
+    @Query('enrollmentId') enrollmentId: string,
+    @CurrentUser() user: UserFromJwt
+  ) {
+    return this.progressService.getModuleProgress(moduleId, enrollmentId, user.userId);
+  }
 }
