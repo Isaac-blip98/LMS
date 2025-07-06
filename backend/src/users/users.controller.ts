@@ -8,6 +8,7 @@ import {
   Patch,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UsersService } from './users.service';
@@ -36,13 +37,17 @@ export class UsersController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all users' })
+  @ApiOperation({ summary: 'Get all users or filter by role' })
   @ApiResponse({
     status: 200,
     description: 'Users retrieved successfully',
     type: [UserResponseDto],
   })
-  findAll() {
+  findAll(@Query('role') role?: string) {
+    console.log('Users controller - role query param:', role);
+    if (role) {
+      return this.usersService.findByRole(role);
+    }
     return this.usersService.findAll();
   }
 

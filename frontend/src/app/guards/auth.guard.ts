@@ -19,7 +19,9 @@ export class AuthGuard implements CanActivate {
 
     const requiredRole = route.data['role'];
     if (requiredRole && !this.authService.hasRole(requiredRole)) {
-      if (this.authService.isInstructor() || this.authService.isAdmin()) {
+      if (this.authService.isAdmin()) {
+        this.router.navigate(['/admin-dashboard']);
+      } else if (this.authService.isInstructor()) {
         this.router.navigate(['/instructor/dashboard']);
       } else if (this.authService.isStudent()) {
         this.router.navigate(['/courses']);

@@ -102,14 +102,30 @@ export class AnalyticsService {
       take: limit,
       include: {
         _count: { select: { enrollments: true } },
+        modules: { include: { lessons: true } },
+        enrollments: { include: { progress: true } },
       },
     });
 
-    return courses.map((course) => ({
-      id: course.id,
-      title: course.title,
-      enrollmentCount: course._count.enrollments,
-    }));
+    return courses.map((course) => {
+      const totalLessons = course.modules.flatMap((m) => m.lessons).length;
+      let fullyCompleted = 0;
+      if (totalLessons > 0) {
+        fullyCompleted = course.enrollments.filter((enroll) =>
+          enroll.progress.filter((p) => p.completed).length === totalLessons
+        ).length;
+      }
+      const enrollmentCount = course._count.enrollments;
+      const completionRate =
+        enrollmentCount > 0 ? Math.round((fullyCompleted / enrollmentCount) * 100) : 0;
+
+      return {
+        id: course.id,
+        title: course.title,
+        enrollmentCount,
+        completionRate,
+      };
+    });
   }
 
   async getInstructorStats(

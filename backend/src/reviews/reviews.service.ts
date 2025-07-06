@@ -11,7 +11,12 @@ export class ReviewsService {
   }
 
   async findAll() {
-    return this.prisma.review.findMany();
+    return this.prisma.review.findMany({
+      include: {
+        user: { select: { id: true, name: true, email: true } },
+        course: { select: { id: true, title: true } },
+      },
+    });
   }
 
   async findOne(id: string) {

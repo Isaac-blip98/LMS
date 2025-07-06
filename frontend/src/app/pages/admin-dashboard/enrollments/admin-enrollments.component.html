@@ -1,0 +1,70 @@
+<div class="max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-md">
+  <h2 class="text-2xl font-bold mb-6 text-gray-800">Admin Enrollments Management</h2>
+
+  <div *ngIf="loading" class="text-gray-500 mb-4">Loading enrollments...</div>
+  <div *ngIf="error" class="text-red-600 mb-4">{{ error }}</div>
+
+  <table *ngIf="!loading && enrollments.length" class="min-w-full bg-white rounded-lg shadow overflow-hidden mb-6">
+    <thead>
+      <tr class="bg-blue-50 text-blue-700">
+        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">User</th>
+        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Course</th>
+        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Status</th>
+        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let enrollment of enrollments" class="border-b hover:bg-blue-50">
+        <td class="px-6 py-4">{{ enrollment.user?.name || enrollment.userId }}</td>
+        <td class="px-6 py-4">{{ enrollment.course?.title || enrollment.courseId }}</td>
+        <td class="px-6 py-4 capitalize">{{ enrollment.status }}</td>
+        <td class="px-6 py-4 space-x-2">
+          <button (click)="viewEnrollment(enrollment)" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">View</button>
+          <button (click)="openIssueCertificateModal(enrollment)" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition">Issue Certificate</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!loading && !enrollments.length" class="text-gray-500">No enrollments found.</div>
+
+  <!-- View Enrollment Modal -->
+  <div *ngIf="showViewModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
+      <h3 class="text-lg font-semibold mb-4">Enrollment Details</h3>
+      <div class="mb-2"><span class="font-medium">User:</span> {{ selectedEnrollment?.user?.name || selectedEnrollment?.userId }}</div>
+      <div class="mb-2"><span class="font-medium">Course:</span> {{ selectedEnrollment?.course?.title || selectedEnrollment?.courseId }}</div>
+      <div class="mb-2"><span class="font-medium">Status:</span> {{ selectedEnrollment?.status }}</div>
+      <div class="flex justify-end mt-6">
+        <button (click)="closeViewModal()" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Issue Certificate Modal -->
+  <div *ngIf="showIssueModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
+      <h3 class="text-lg font-semibold mb-4">Issue Certificate</h3>
+      <div class="mb-2">Are you sure you want to issue a certificate for:</div>
+      <div class="mb-2"><span class="font-medium">User:</span> {{ selectedEnrollment?.user?.name || selectedEnrollment?.userId }}</div>
+      <div class="mb-2"><span class="font-medium">Course:</span> {{ selectedEnrollment?.course?.title || selectedEnrollment?.courseId }}</div>
+      <div class="my-4">
+        <label class="block text-sm font-medium mb-1">Certificate File (PDF or Image):</label>
+        <input type="file" accept=".pdf,image/*" (change)="onCertificateFileSelected($event)" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        <div *ngIf="certificateUploadInProgress" class="text-blue-600 text-sm mt-1">Uploading...</div>
+        <div *ngIf="certificateUploadError" class="text-red-600 text-sm mt-1">{{ certificateUploadError }}</div>
+        <div *ngIf="certificateUploadUrl" class="text-green-600 text-sm mt-1">File uploaded successfully!</div>
+        <div *ngIf="selectedCertificateFile && !certificateUploadInProgress && !certificateUploadUrl" class="text-gray-600 text-sm mt-1">Selected: {{ selectedCertificateFile.name }}</div>
+      </div>
+      <div *ngIf="issueSuccess" class="text-green-600 my-2">{{ issueSuccess }}</div>
+      <div *ngIf="issueError" class="text-red-600 my-2">{{ issueError }}</div>
+      <div class="flex justify-end mt-6 space-x-2">
+        <button (click)="closeIssueModal()" [disabled]="issueInProgress" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition">Cancel</button>
+        <button (click)="issueCertificate()" [disabled]="issueInProgress || !certificateUploadUrl || issueSuccess" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
+          <span *ngIf="issueInProgress">Issuing...</span>
+          <span *ngIf="!issueInProgress">Confirm</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div> 

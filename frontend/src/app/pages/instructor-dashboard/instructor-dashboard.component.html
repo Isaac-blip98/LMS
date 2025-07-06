@@ -1,449 +1,182 @@
-<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-  <!-- Header -->
-  <div class="bg-white shadow-sm border-b border-gray-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center py-6">
-        <div>
-          <h1 class="text-3xl font-bold text-gray-900">Instructor Dashboard</h1>
-          <p class="text-gray-600 mt-1">Manage your courses and track student progress</p>
-        </div>
-        <div class="flex items-center space-x-4">
-          <button routerLink="/instructor/quizzes" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
-            <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            Manage Quizzes
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Loading State -->
-  <div *ngIf="isLoading" class="flex items-center justify-center min-h-96">
-    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-  </div>
-
+<div class="flex min-h-screen bg-blue-50">
+  <!-- Sidebar -->
+  <aside class="w-60 bg-white border-r border-blue-100 shadow-sm flex flex-col py-8 px-4">
+    <nav class="flex-1">
+      <ul class="space-y-2">
+        <li>
+          <a routerLink="/instructor/dashboard" routerLinkActive="bg-blue-100 text-blue-700" class="flex items-center px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-blue-50 transition">
+            <span class="material-icons mr-3 text-blue-400">dashboard</span>
+            Dashboard
+          </a>
+        </li>
+        <li>
+          <a routerLink="/instructor/courses" routerLinkActive="bg-blue-100 text-blue-700" class="flex items-center px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-blue-50 transition">
+            <span class="material-icons mr-3 text-blue-400">menu_book</span>
+            Courses
+          </a>
+        </li>
+        <li>
+          <a routerLink="/instructor/modules" routerLinkActive="bg-blue-100 text-blue-700" class="flex items-center px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-blue-50 transition">
+            <span class="material-icons mr-3 text-green-400">view_module</span>
+            Modules
+          </a>
+        </li>
+        <li>
+          <a routerLink="/instructor/lessons" routerLinkActive="bg-blue-100 text-blue-700" class="flex items-center px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-blue-50 transition">
+            <span class="material-icons mr-3 text-yellow-400">menu_book</span>
+            Lessons
+          </a>
+        </li>
+        <li>
+          <a routerLink="/instructor/quizzes" routerLinkActive="bg-blue-100 text-blue-700" class="flex items-center px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-blue-50 transition">
+            <span class="material-icons mr-3 text-purple-400">quiz</span>
+            Quizzes
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
   <!-- Main Content -->
-  <div *ngIf="!isLoading" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div class="flex items-center">
-          <div class="p-2 bg-blue-100 rounded-lg">
-            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-            </svg>
-          </div>
-          <div class="ml-4">
-            <p class="text-sm font-medium text-gray-600">Total Courses</p>
-            <p class="text-2xl font-bold text-gray-900">{{ dashboardStats?.totalCourses || 0 }}</p>
-          </div>
+  <div class="flex-1 flex flex-col">
+    <!-- Header -->
+    <header class="bg-[rgb(238,255,255)] shadow-sm w-full z-50 px-8 py-4 flex items-center justify-between">
+      <div class="flex items-center">
+        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+          <i class="fas fa-graduation-cap text-white text-sm"></i>
         </div>
+        <span class="ml-2 text-xl font-bold text-gray-900">LearningHub</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="bg-blue-100 text-blue-700 rounded-full px-3 py-1 font-medium">Test Instructor M</span>
+      </div>
+    </header>
+    <!-- Dashboard Content -->
+    <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <!-- Loading State -->
+      <div *ngIf="isLoading" class="flex items-center justify-center min-h-96">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
       </div>
 
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div class="flex items-center">
-          <div class="p-2 bg-green-100 rounded-lg">
-            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-            </svg>
-          </div>
-          <div class="ml-4">
-            <p class="text-sm font-medium text-gray-600">Total Students</p>
-            <p class="text-2xl font-bold text-gray-900">{{ enrollments.length || 0 }}</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div class="flex items-center">
-          <div class="p-2 bg-yellow-100 rounded-lg">
-            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-            </svg>
-          </div>
-          <div class="ml-4">
-            <p class="text-sm font-medium text-gray-600">Total Enrollments</p>
-            <p class="text-2xl font-bold text-gray-900">{{ enrollments.length || 0 }}</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div class="flex items-center">
-          <div class="p-2 bg-purple-100 rounded-lg">
-            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
-            </svg>
-          </div>
-          <div class="ml-4">
-            <p class="text-sm font-medium text-gray-600">Average Rating</p>
-            <p class="text-2xl font-bold text-gray-900">{{ dashboardStats?.averageRating || 0 }}/5</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-      <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <button routerLink="/instructor/modules" class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-          <div class="p-2 bg-green-100 rounded-lg mr-3">
-            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-            </svg>
-          </div>
-          <div class="text-left">
-            <p class="font-medium text-gray-900">Manage Modules</p>
-            <p class="text-sm text-gray-500">Organize course content</p>
-          </div>
-        </button>
-        
-        <button routerLink="/instructor/quizzes" class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-          <div class="p-2 bg-purple-100 rounded-lg mr-3">
-            <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-          </div>
-          <div class="text-left">
-            <p class="font-medium text-gray-900">Create Questions</p>
-            <p class="text-sm text-gray-500">Add quiz questions</p>
-          </div>
-        </button>
-        
-        <button routerLink="/instructor/lessons" class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-          <div class="p-2 bg-yellow-100 rounded-lg mr-3">
-            <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-            </svg>
-          </div>
-          <div class="text-left">
-            <p class="font-medium text-gray-900">Add Lessons</p>
-            <p class="text-sm text-gray-500">Create lesson content</p>
-          </div>
-        </button>
-      </div>
-    </div>
-
-    <!-- Course Selection and Tabs -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
-      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
-        <div class="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Select Course</label>
-            <select 
-              (change)="onCourseChange($event)"
-              class="block w-full sm:w-64 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-              <option *ngFor="let course of courses" [value]="course.id">{{ course.title }}</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Time Period</label>
-            <select 
-              (change)="onPeriodChange($event)"
-              class="block w-full sm:w-32 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-              <option value="week">Week</option>
-              <option value="month" selected>Month</option>
-              <option value="year">Year</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tab Navigation -->
-      <div class="flex space-x-4 mb-6">
-        <button (click)="setActiveTab('overview')" [class.bg-indigo-100]="activeTab === 'overview'" class="px-4 py-2 rounded-lg font-medium" >Overview</button>
-        <button (click)="setActiveTab('students')" [class.bg-indigo-100]="activeTab === 'students'" class="px-4 py-2 rounded-lg font-medium" >Students</button>
-        <button (click)="setActiveTab('modules')" [class.bg-indigo-100]="activeTab === 'modules'" class="px-4 py-2 rounded-lg font-medium" >Modules</button>
-        <button (click)="setActiveTab('engagement')" [class.bg-indigo-100]="activeTab === 'engagement'" class="px-4 py-2 rounded-lg font-medium" >Engagement</button>
-        <button (click)="setActiveTab('certificates')" [class.bg-indigo-100]="activeTab === 'certificates'" class="px-4 py-2 rounded-lg font-medium" >Certificates</button>
-        <button (click)="setActiveTab('progress')" [class.bg-indigo-100]="activeTab === 'progress'" class="px-4 py-2 rounded-lg font-medium" >Progress Analytics</button>
-        <button (click)="setActiveTab('details')" [class.bg-indigo-100]="activeTab === 'details'" class="px-4 py-2 rounded-lg font-medium text-blue-700 border border-blue-300" >Module/Lesson Details</button>
-      </div>
-      <!-- Tab Content -->
-      <div class="space-y-8">
-        
-        <!-- Overview Tab -->
-        <div *ngIf="activeTab === 'overview'" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <!-- Course Summary -->
+      <!-- Main Content -->
+      <div *ngIf="!isLoading" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Course Summary</h3>
-            <div *ngIf="selectedCourse" class="space-y-4">
-              <div class="flex justify-between items-center">
-                <span class="text-gray-600">Course Title:</span>
-                <span class="font-medium">{{ selectedCourse.title }}</span>
+            <div class="flex items-center">
+              <div class="p-2 bg-blue-100 rounded-lg">
+                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                </svg>
               </div>
-              <div class="flex justify-between items-center">
-                <span class="text-gray-600">Status:</span>
-                <span [class]="selectedCourse.isPublished ? 'text-green-600' : 'text-yellow-600'" class="font-medium">
-                  {{ selectedCourse.isPublished ? 'Published' : 'Draft' }}
-                </span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-gray-600">Level:</span>
-                <span class="font-medium">{{ selectedCourse.level }}</span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-gray-600">Category:</span>
-                <span class="font-medium">{{ selectedCourse.category }}</span>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-600">Total Courses</p>
+                <p class="text-2xl font-bold text-gray-900">{{ dashboardStats?.totalCourses || 0 }}</p>
               </div>
             </div>
           </div>
 
-          <!-- Quick Stats -->
           <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Stats</h3>
-            <div class="space-y-4">
-              <div class="flex justify-between items-center">
-                <span class="text-gray-600">Total Modules:</span>
-                <span class="font-medium">{{ moduleProgress.length }}</span>
+            <div class="flex items-center">
+              <div class="p-2 bg-green-100 rounded-lg">
+                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
               </div>
-              <div class="flex justify-between items-center">
-                <span class="text-gray-600">Active Students:</span>
-                <span class="font-medium">{{ studentProgress.length }}</span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-gray-600">Avg. Progress:</span>
-                <span class="font-medium">
-                  {{ getAverageProgress() }}%
-                </span>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-600">Total Students</p>
+                <p class="text-2xl font-bold text-gray-900">{{ enrollments.length || 0 }}</p>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Students Tab -->
-        <div *ngIf="activeTab === 'students'" class="bg-white rounded-xl shadow-sm border border-gray-200">
-          <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-900">Student Progress</h3>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lessons</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Activity</th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr *ngFor="let student of studentProgress" class="hover:bg-gray-50">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div>
-                      <div class="text-sm font-medium text-gray-900">{{ student.studentName }}</div>
-                      <div class="text-sm text-gray-500">{{ student.email }}</div>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                      <div class="w-16 bg-gray-200 rounded-full h-2 mr-3">
-                        <div [class]="getProgressBarColor(student.progress)" 
-                             class="h-2 rounded-full transition-all duration-300"
-                             [style.width.%]="student.progress"></div>
-                      </div>
-                      <span [class]="getProgressColor(student.progress)" class="text-sm font-medium">
-                        {{ student.progress }}%
-                      </span>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {{ student.completedLessons }}/{{ student.totalLessons }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {{ formatDate(student.lastActivity) }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Modules Tab -->
-        <div *ngIf="activeTab === 'modules'" class="bg-white rounded-xl shadow-sm border border-gray-200">
-          <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-900">Module Progress</h3>
-          </div>
-          <div class="p-6">
-            <div class="space-y-6">
-              <div *ngFor="let module of moduleProgress" class="border border-gray-200 rounded-lg p-4">
-                <div class="flex justify-between items-start mb-3">
-                  <h4 class="text-lg font-medium text-gray-900">{{ module.moduleTitle }}</h4>
-                  <span [class]="getProgressColor(getSafeCompletionRate(module))" class="text-sm font-medium">
-                    {{ getSafeCompletionRate(module) }}%
-                  </span>
-                </div>
-                <div class="mb-3">
-                  <div class="flex justify-between text-sm text-gray-600 mb-1">
-                    <span>Progress</span>
-                    <span>{{ module.completedLessons }}/{{ module.totalLessons }} lessons</span>
-                  </div>
-                  <div class="w-full bg-gray-200 rounded-full h-2">
-                    <div [class]="getSafeCompletionRate(module) === 0 ? 'bg-gray-400' : getProgressBarColor(getSafeCompletionRate(module))"
-                         class="h-2 rounded-full transition-all duration-300"
-                         [style.width.%]="getSafeCompletionRate(module)"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Engagement Tab -->
-        <div *ngIf="activeTab === 'engagement'" class="bg-white rounded-xl shadow-sm border border-gray-200">
-          <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-900">Course Engagement</h3>
-          </div>
-          <div class="p-6">
-            <div *ngIf="courseEngagement && courseEngagement.length > 0" class="space-y-4">
-              <div *ngFor="let engagement of courseEngagement" class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-                <div>
-                  <div class="text-sm font-medium text-gray-900">{{ formatDate(engagement.date) }}</div>
-                  <div class="text-sm text-gray-500">{{ engagement.activeStudents }} active students</div>
-                </div>
-                <div class="text-right">
-                  <div class="text-sm font-medium text-gray-900">{{ engagement.lessonsCompleted }} lessons completed</div>
-                  <div class="text-sm text-gray-500">{{ engagement.timeSpent }} minutes spent</div>
-                </div>
-              </div>
-            </div>
-            <div *ngIf="!courseEngagement || courseEngagement.length === 0" class="text-center py-8">
-              <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-              </svg>
-              <p class="mt-2 text-sm text-gray-500">No engagement data available</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Certificates Tab -->
-        <div *ngIf="activeTab === 'certificates'" class="space-y-6">
-          <!-- Certificate Stats -->
           <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div class="flex justify-between items-center mb-4">
-              <h3 class="text-lg font-semibold text-gray-900">Certificate Statistics</h3>
-              <button (click)="loadCertificateStats()" class="text-indigo-600 hover:text-indigo-700 text-sm font-medium">
-                Refresh
-              </button>
-            </div>
-            <div *ngIf="certificateStats" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div class="text-center p-4 bg-blue-50 rounded-lg">
-                <div class="text-2xl font-bold text-blue-600">{{ certificateStats.totalIssued }}</div>
-                <div class="text-sm text-gray-600">Total Issued</div>
+            <div class="flex items-center">
+              <div class="p-2 bg-yellow-100 rounded-lg">
+                <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                </svg>
               </div>
-              <div class="text-center p-4 bg-green-50 rounded-lg">
-                <div class="text-2xl font-bold text-green-600">{{ certificateStats.thisMonth }}</div>
-                <div class="text-sm text-gray-600">This Month</div>
-              </div>
-              <div class="text-center p-4 bg-purple-50 rounded-lg">
-                <div class="text-2xl font-bold text-purple-600">{{ certificateStats.thisYear }}</div>
-                <div class="text-sm text-gray-600">This Year</div>
-              </div>
-              <div class="text-center p-4 bg-yellow-50 rounded-lg">
-                <div class="text-2xl font-bold text-yellow-600">{{ certificateStats.byCourse?.length || 0 }}</div>
-                <div class="text-sm text-gray-600">Courses</div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-600">Total Enrollments</p>
+                <p class="text-2xl font-bold text-gray-900">{{ enrollments.length || 0 }}</p>
               </div>
             </div>
           </div>
 
-          <!-- Issue Certificate -->
           <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Issue Certificate</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Select Student</label>
-                <select 
-                  [(ngModel)]="selectedStudentForCertificate"
-                  class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                  <option value="">Choose a student</option>
-                  <option *ngFor="let enrollment of enrollments || []" [value]="enrollment.user?.id || enrollment.userId">
-                    {{ enrollment.user?.name || enrollment.studentName }}
-                  </option>
-                </select>
+            <div class="flex items-center">
+              <div class="p-2 bg-purple-100 rounded-lg">
+                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                </svg>
               </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Certificate URL</label>
-                <input 
-                  type="text" 
-                  [(ngModel)]="certificateUrl"
-                  placeholder="https://example.com/certificate.pdf"
-                  class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                <input 
-                  type="file"
-                  (change)="onCertificateFileSelected($event)"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  class="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-600">Average Rating</p>
+                <p class="text-2xl font-bold text-gray-900">{{ dashboardStats?.averageRating || 0 }}/5</p>
               </div>
-              <div class="flex items-end">
-                <button 
-                  (click)="issueCertificate()"
-                  [disabled]="!selectedStudentForCertificate || !certificateUrl"
-                  class="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors">
-                  Issue Certificate
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Student Certificates -->
-          <div class="bg-white rounded-xl shadow-sm border border-gray-200">
-            <div class="px-6 py-4 border-b border-gray-200">
-              <h3 class="text-lg font-semibold text-gray-900">Student Certificates</h3>
-            </div>
-            <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                  <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Issued Date</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                  </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                  <tr *ngFor="let cert of studentCertificates || []" class="hover:bg-gray-50">
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm font-medium text-gray-900">{{ cert.studentName || 'N/A' }}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm text-gray-900">{{ cert.courseTitle || 'N/A' }}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {{ formatDate(cert.issuedAt) }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <a [href]="cert.certificateUrl" target="_blank" class="text-indigo-600 hover:text-indigo-900">View</a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
             </div>
           </div>
         </div>
 
-        <!-- Progress Analytics Tab -->
-        <div *ngIf="activeTab === 'progress'" class="space-y-6">
-          <!-- Student Selection -->
-          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <!-- Quick Actions -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <button routerLink="/instructor/modules" class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+              <div class="p-2 bg-green-100 rounded-lg mr-3">
+                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
+              </div>
+              <div class="text-left">
+                <p class="font-medium text-gray-900">Manage Modules</p>
+                <p class="text-sm text-gray-500">Organize course content</p>
+              </div>
+            </button>
+            
+            <button routerLink="/instructor/quizzes" class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+              <div class="p-2 bg-purple-100 rounded-lg mr-3">
+                <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <div class="text-left">
+                <p class="font-medium text-gray-900">Create Questions</p>
+                <p class="text-sm text-gray-500">Add quiz questions</p>
+              </div>
+            </button>
+            
+            <button routerLink="/instructor/lessons" class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+              <div class="p-2 bg-yellow-100 rounded-lg mr-3">
+                <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                </svg>
+              </div>
+              <div class="text-left">
+                <p class="font-medium text-gray-900">Add Lessons</p>
+                <p class="text-sm text-gray-500">Create lesson content</p>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Course Selection and Tabs -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
             <div class="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Select Student</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Select Course</label>
                 <select 
-                  (change)="onStudentChange($event)"
-                  class="block w-full sm:w-64 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                  <option value="">Choose a student</option>
-                  <option *ngFor="let enrollment of enrollments || []" [value]="enrollment.user?.id || enrollment.userId">
-                    {{ enrollment.user?.name || enrollment.studentName }}
-                  </option>
+                  (change)="onCourseChange($event)"
+                  class="block w-full sm:w-64 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                  <option *ngFor="let course of courses" [value]="course.id">{{ course.title }}</option>
                 </select>
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Time Period</label>
                 <select 
-                  (change)="onAnalyticsPeriodChange($event)"
-                  class="block w-full sm:w-32 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                  (change)="onPeriodChange($event)"
+                  class="block w-full sm:w-32 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                   <option value="week">Week</option>
                   <option value="month" selected>Month</option>
                   <option value="year">Year</option>
@@ -452,149 +185,451 @@
             </div>
           </div>
 
-          <!-- Student Progress Analytics -->
-          <div *ngIf="selectedStudentForAnalytics" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Progress Overview -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 class="text-lg font-semibold text-gray-900 mb-4">Progress Overview</h3>
-              <div *ngIf="studentAnalytics" class="space-y-4">
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-600">Total Courses:</span>
-                  <span class="font-medium">{{ studentAnalytics.totalCourses }}</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-600">Completed Courses:</span>
-                  <span class="font-medium">{{ studentAnalytics.completedCourses }}</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-600">Average Progress:</span>
-                  <span class="font-medium">{{ studentAnalytics.averageProgress }}%</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-600">Total Time Spent:</span>
-                  <span class="font-medium">{{ formatTime(studentAnalytics.totalTimeSpent) }}</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Activity Metrics -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 class="text-lg font-semibold text-gray-900 mb-4">Activity Metrics</h3>
-              <div *ngIf="studentAnalytics" class="space-y-4">
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-600">Lessons Completed:</span>
-                  <span class="font-medium">{{ studentAnalytics.lessonsCompleted || 0 }}</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-600">Quizzes Taken:</span>
-                  <span class="font-medium">{{ getQuizzesTaken() }}</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-600">Average Quiz Score:</span>
-                  <span class="font-medium">{{ getAverageQuizScore() }}%</span>
-                </div>
-              </div>
-            </div>
+          <!-- Tab Navigation -->
+          <div class="flex space-x-4 mb-6">
+            <button (click)="setActiveTab('overview')" [class.bg-indigo-100]="activeTab === 'overview'" class="px-4 py-2 rounded-lg font-medium" >Overview</button>
+            <button (click)="setActiveTab('students')" [class.bg-indigo-100]="activeTab === 'students'" class="px-4 py-2 rounded-lg font-medium" >Students</button>
+            <button (click)="setActiveTab('modules')" [class.bg-indigo-100]="activeTab === 'modules'" class="px-4 py-2 rounded-lg font-medium" >Modules</button>
+            <button (click)="setActiveTab('engagement')" [class.bg-indigo-100]="activeTab === 'engagement'" class="px-4 py-2 rounded-lg font-medium" >Engagement</button>
+            <button (click)="setActiveTab('certificates')" [class.bg-indigo-100]="activeTab === 'certificates'" class="px-4 py-2 rounded-lg font-medium" >Certificates</button>
+            <button (click)="setActiveTab('progress')" [class.bg-indigo-100]="activeTab === 'progress'" class="px-4 py-2 rounded-lg font-medium" >Progress Analytics</button>
+            <button (click)="setActiveTab('details')" [class.bg-indigo-100]="activeTab === 'details'" class="px-4 py-2 rounded-lg font-medium text-blue-700 border border-blue-300" >Module/Lesson Details</button>
           </div>
+          <!-- Tab Content -->
+          <div class="space-y-8">
+            
+            <!-- Overview Tab -->
+            <div *ngIf="activeTab === 'overview'" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <!-- Course Summary -->
+              <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Course Summary</h3>
+                <div *ngIf="selectedCourse" class="space-y-4">
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-600">Course Title:</span>
+                    <span class="font-medium">{{ selectedCourse.title }}</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-600">Status:</span>
+                    <span [class]="selectedCourse.isPublished ? 'text-green-600' : 'text-yellow-600'" class="font-medium">
+                      {{ selectedCourse.isPublished ? 'Published' : 'Draft' }}
+                    </span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-600">Level:</span>
+                    <span class="font-medium">{{ selectedCourse.level }}</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-600">Category:</span>
+                    <span class="font-medium">{{ selectedCourse.category }}</span>
+                  </div>
+                </div>
+              </div>
 
-          <!-- Quiz Attempts -->
-          <div *ngIf="selectedStudentForAnalytics" class="bg-white rounded-xl shadow-sm border border-gray-200">
-            <div class="px-6 py-4 border-b border-gray-200">
-              <h3 class="text-lg font-semibold text-gray-900">Quiz Attempts</h3>
+              <!-- Quick Stats -->
+              <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Stats</h3>
+                <div class="space-y-4">
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-600">Total Modules:</span>
+                    <span class="font-medium">{{ moduleProgress.length }}</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-600">Active Students:</span>
+                    <span class="font-medium">{{ studentProgress.length }}</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-600">Avg. Progress:</span>
+                    <span class="font-medium">
+                      {{ getAverageProgress() }}%
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                  <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quiz</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Questions</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time Spent</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Completed</th>
-                  </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                  <tr *ngFor="let attempt of quizAttempts || []" class="hover:bg-gray-50">
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm font-medium text-gray-900">{{ attempt.quizTitle || 'N/A' }}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <span [class]="getScoreColor(attempt.score)" class="text-sm font-medium">
-                        {{ attempt.score }}%
+
+            <!-- Students Tab -->
+            <div *ngIf="activeTab === 'students'" class="bg-white rounded-xl shadow-sm border border-gray-200">
+              <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">Student Progress</h3>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lessons</th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Activity</th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr *ngFor="let student of studentProgress" class="hover:bg-gray-50">
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div>
+                          <div class="text-sm font-medium text-gray-900">{{ student.studentName }}</div>
+                          <div class="text-sm text-gray-500">{{ student.email }}</div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div class="w-16 bg-gray-200 rounded-full h-2 mr-3">
+                            <div [class]="getProgressBarColor(student.progress)" 
+                                 class="h-2 rounded-full transition-all duration-300"
+                                 [style.width.%]="student.progress"></div>
+                          </div>
+                          <span [class]="getProgressColor(student.progress)" class="text-sm font-medium">
+                            {{ student.progress }}%
+                          </span>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {{ student.completedLessons }}/{{ student.totalLessons }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {{ formatDate(student.lastActivity) }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Modules Tab -->
+            <div *ngIf="activeTab === 'modules'" class="bg-white rounded-xl shadow-sm border border-gray-200">
+              <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">Module Progress</h3>
+              </div>
+              <div class="p-6">
+                <div class="space-y-6">
+                  <div *ngFor="let module of moduleProgress" class="border border-gray-200 rounded-lg p-4">
+                    <div class="flex justify-between items-start mb-3">
+                      <h4 class="text-lg font-medium text-gray-900">{{ module.moduleTitle }}</h4>
+                      <span [class]="getProgressColor(getSafeCompletionRate(module))" class="text-sm font-medium">
+                        {{ getSafeCompletionRate(module) }}%
                       </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {{ attempt.correctAnswers }}/{{ attempt.totalQuestions }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {{ formatTime(attempt.timeSpent) }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {{ formatDate(attempt.completedAt) }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                    </div>
+                    <div class="mb-3">
+                      <div class="flex justify-between text-sm text-gray-600 mb-1">
+                        <span>Progress</span>
+                        <span>{{ module.completedLessons }}/{{ module.totalLessons }} lessons</span>
+                      </div>
+                      <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div [class]="getSafeCompletionRate(module) === 0 ? 'bg-gray-400' : getProgressBarColor(getSafeCompletionRate(module))"
+                             class="h-2 rounded-full transition-all duration-300"
+                             [style.width.%]="getSafeCompletionRate(module)"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Module/Lesson Details Tab -->
-        <div *ngIf="activeTab === 'details'" class="space-y-6">
-          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Module/Lesson Details</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Select Module</label>
-                <select [(ngModel)]="selectedModuleId" (change)="onModuleDetailSelect(selectedModuleId, selectedEnrollmentId)" class="block w-full px-3 py-2 border border-gray-300 rounded-lg">
-                  <option value="">Choose a module</option>
-                  <option *ngFor="let module of moduleProgress" [value]="module.moduleId">{{ module.moduleTitle }}</option>
-                </select>
+            <!-- Engagement Tab -->
+            <div *ngIf="activeTab === 'engagement'" class="bg-white rounded-xl shadow-sm border border-gray-200">
+              <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">Course Engagement</h3>
               </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Select Enrollment</label>
-                <select [(ngModel)]="selectedEnrollmentId" (change)="onModuleDetailSelect(selectedModuleId, selectedEnrollmentId)" class="block w-full px-3 py-2 border border-gray-300 rounded-lg">
-                  <option value="">Choose an enrollment</option>
-                  <option *ngFor="let enrollment of enrollments" [value]="enrollment.id">
-                    {{ (enrollment.user?.name || enrollment.studentName || 'Unknown Student') + ' | ' + (enrollment.user?.email || 'No Email') + ' | ' + (enrollment.course?.title || selectedCourse?.title || 'No Course Title') }}
-                  </option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Select Lesson</label>
-                <select [(ngModel)]="selectedLessonId" (change)="onLessonDetailSelect(selectedLessonId, selectedCourse?.id)" class="block w-full px-3 py-2 border border-gray-300 rounded-lg">
-                  <option value="">Choose a lesson</option>
-                  <ng-container *ngIf="moduleProgressDetails">
-                    <option *ngFor="let lesson of moduleProgressDetails.lessons" [value]="lesson.lessonId">{{ lesson.lessonTitle }}</option>
-                  </ng-container>
-                </select>
+              <div class="p-6">
+                <div *ngIf="courseEngagement && courseEngagement.length > 0" class="space-y-4">
+                  <div *ngFor="let engagement of courseEngagement" class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                    <div>
+                      <div class="text-sm font-medium text-gray-900">{{ formatDate(engagement.date) }}</div>
+                      <div class="text-sm text-gray-500">{{ engagement.activeStudents }} active students</div>
+                    </div>
+                    <div class="text-right">
+                      <div class="text-sm font-medium text-gray-900">{{ engagement.lessonsCompleted }} lessons completed</div>
+                      <div class="text-sm text-gray-500">{{ engagement.timeSpent }} minutes spent</div>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="!courseEngagement || courseEngagement.length === 0" class="text-center py-8">
+                  <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                  </svg>
+                  <p class="mt-2 text-sm text-gray-500">No engagement data available</p>
+                </div>
               </div>
             </div>
-            <div *ngIf="moduleProgressDetails" class="mt-6">
-              <h4 class="text-md font-semibold mb-2">Module Progress Details</h4>
-              <div class="space-y-2">
-                <div><strong>Module:</strong> {{ moduleProgressDetails.moduleTitle }}</div>
-                <div><strong>Progress:</strong> {{ moduleProgressDetails.progress }}%</div>
-                <div><strong>Completed Lessons:</strong> {{ moduleProgressDetails.completedLessons }}/{{ moduleProgressDetails.totalLessons }}</div>
+
+            <!-- Certificates Tab -->
+            <div *ngIf="activeTab === 'certificates'" class="space-y-6">
+              <!-- Certificate Stats -->
+              <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div class="flex justify-between items-center mb-4">
+                  <h3 class="text-lg font-semibold text-gray-900">Certificate Statistics</h3>
+                  <button (click)="loadCertificateStats()" class="text-indigo-600 hover:text-indigo-700 text-sm font-medium">
+                    Refresh
+                  </button>
+                </div>
+                <div *ngIf="certificateStats" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div class="text-center p-4 bg-blue-50 rounded-lg">
+                    <div class="text-2xl font-bold text-blue-600">{{ certificateStats.totalIssued }}</div>
+                    <div class="text-sm text-gray-600">Total Issued</div>
+                  </div>
+                  <div class="text-center p-4 bg-green-50 rounded-lg">
+                    <div class="text-2xl font-bold text-green-600">{{ certificateStats.thisMonth }}</div>
+                    <div class="text-sm text-gray-600">This Month</div>
+                  </div>
+                  <div class="text-center p-4 bg-purple-50 rounded-lg">
+                    <div class="text-2xl font-bold text-purple-600">{{ certificateStats.thisYear }}</div>
+                    <div class="text-sm text-gray-600">This Year</div>
+                  </div>
+                  <div class="text-center p-4 bg-yellow-50 rounded-lg">
+                    <div class="text-2xl font-bold text-yellow-600">{{ certificateStats.byCourse?.length || 0 }}</div>
+                    <div class="text-sm text-gray-600">Courses</div>
+                  </div>
+                </div>
               </div>
-              <div class="mt-4">
-                <h5 class="font-medium mb-2">Lessons</h5>
-                <ul class="list-disc ml-6">
-                  <li *ngFor="let lesson of moduleProgressDetails.lessons">
-                    {{ lesson.lessonTitle }} <span *ngIf="lesson.isCompleted" class="text-green-600">(Completed)</span>
-                  </li>
-                </ul>
+
+              <!-- Issue Certificate -->
+              <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Issue Certificate</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Select Student</label>
+                    <select 
+                      [(ngModel)]="selectedStudentForCertificate"
+                      class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                      <option value="">Choose a student</option>
+                      <option *ngFor="let enrollment of enrollments || []" [value]="enrollment.user?.id || enrollment.userId">
+                        {{ enrollment.user?.name || enrollment.studentName }}
+                      </option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Certificate URL</label>
+                    <input 
+                      type="text" 
+                      [(ngModel)]="certificateUrl"
+                      placeholder="https://example.com/certificate.pdf"
+                      class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <input 
+                      type="file"
+                      (change)="onCertificateFileSelected($event)"
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      class="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                  </div>
+                  <div class="flex items-end">
+                    <button 
+                      (click)="issueCertificate()"
+                      [disabled]="!selectedStudentForCertificate || !certificateUrl"
+                      class="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors">
+                      Issue Certificate
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Student Certificates -->
+              <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                <div class="px-6 py-4 border-b border-gray-200">
+                  <h3 class="text-lg font-semibold text-gray-900">Student Certificates</h3>
+                </div>
+                <div class="overflow-x-auto">
+                  <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Issued Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                      <tr *ngFor="let cert of studentCertificates || []" class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <div class="text-sm font-medium text-gray-900">{{ cert.studentName || 'N/A' }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <div class="text-sm text-gray-900">{{ cert.courseTitle || 'N/A' }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {{ formatDate(cert.issuedAt) }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <a [href]="cert.certificateUrl" target="_blank" class="text-indigo-600 hover:text-indigo-900">View</a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
-            <div *ngIf="lessonCompletionStats" class="mt-6">
-              <h4 class="text-md font-semibold mb-2">Lesson Completion Statistics</h4>
-              <div class="space-y-2">
-                <div><strong>Lesson:</strong> {{ lessonCompletionStats.lessonTitle }}</div>
-                <div><strong>Course:</strong> {{ lessonCompletionStats.courseId }}</div>
-                <div><strong>Total Enrollments:</strong> {{ lessonCompletionStats.totalEnrollments }}</div>
-                <div><strong>Completed Count:</strong> {{ lessonCompletionStats.completedCount }}</div>
-                <div><strong>Completion Rate:</strong> {{ lessonCompletionStats.completionRate }}%</div>
-                <div><strong>Average Time to Complete:</strong> {{ lessonCompletionStats.averageTimeToComplete }} mins</div>
+
+            <!-- Progress Analytics Tab -->
+            <div *ngIf="activeTab === 'progress'" class="space-y-6">
+              <!-- Student Selection -->
+              <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div class="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Select Student</label>
+                    <select 
+                      (change)="onStudentChange($event)"
+                      class="block w-full sm:w-64 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                      <option value="">Choose a student</option>
+                      <option *ngFor="let enrollment of enrollments || []" [value]="enrollment.user?.id || enrollment.userId">
+                        {{ enrollment.user?.name || enrollment.studentName }}
+                      </option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Time Period</label>
+                    <select 
+                      (change)="onAnalyticsPeriodChange($event)"
+                      class="block w-full sm:w-32 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                      <option value="week">Week</option>
+                      <option value="month" selected>Month</option>
+                      <option value="year">Year</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Student Progress Analytics -->
+              <div *ngIf="selectedStudentForAnalytics" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Progress Overview -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                  <h3 class="text-lg font-semibold text-gray-900 mb-4">Progress Overview</h3>
+                  <div *ngIf="studentAnalytics" class="space-y-4">
+                    <div class="flex justify-between items-center">
+                      <span class="text-gray-600">Total Courses:</span>
+                      <span class="font-medium">{{ studentAnalytics.totalCourses }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-gray-600">Completed Courses:</span>
+                      <span class="font-medium">{{ studentAnalytics.completedCourses }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-gray-600">Average Progress:</span>
+                      <span class="font-medium">{{ studentAnalytics.averageProgress }}%</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-gray-600">Total Time Spent:</span>
+                      <span class="font-medium">{{ formatTime(studentAnalytics.totalTimeSpent) }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Activity Metrics -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                  <h3 class="text-lg font-semibold text-gray-900 mb-4">Activity Metrics</h3>
+                  <div *ngIf="studentAnalytics" class="space-y-4">
+                    <div class="flex justify-between items-center">
+                      <span class="text-gray-600">Lessons Completed:</span>
+                      <span class="font-medium">{{ studentAnalytics.lessonsCompleted || 0 }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-gray-600">Quizzes Taken:</span>
+                      <span class="font-medium">{{ getQuizzesTaken() }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-gray-600">Average Quiz Score:</span>
+                      <span class="font-medium">{{ getAverageQuizScore() }}%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quiz Attempts -->
+              <div *ngIf="selectedStudentForAnalytics" class="bg-white rounded-xl shadow-sm border border-gray-200">
+                <div class="px-6 py-4 border-b border-gray-200">
+                  <h3 class="text-lg font-semibold text-gray-900">Quiz Attempts</h3>
+                </div>
+                <div class="overflow-x-auto">
+                  <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quiz</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Questions</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time Spent</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Completed</th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                      <tr *ngFor="let attempt of quizAttempts || []" class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <div class="text-sm font-medium text-gray-900">{{ attempt.quizTitle || 'N/A' }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <span [class]="getScoreColor(attempt.score)" class="text-sm font-medium">
+                            {{ attempt.score }}%
+                          </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {{ attempt.correctAnswers }}/{{ attempt.totalQuestions }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {{ formatTime(attempt.timeSpent) }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {{ formatDate(attempt.completedAt) }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Module/Lesson Details Tab -->
+            <div *ngIf="activeTab === 'details'" class="space-y-6">
+              <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Module/Lesson Details</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Select Module</label>
+                    <select [(ngModel)]="selectedModuleId" (change)="onModuleDetailSelect(selectedModuleId, selectedEnrollmentId)" class="block w-full px-3 py-2 border border-gray-300 rounded-lg">
+                      <option value="">Choose a module</option>
+                      <option *ngFor="let module of moduleProgress" [value]="module.moduleId">{{ module.moduleTitle }}</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Select Enrollment</label>
+                    <select [(ngModel)]="selectedEnrollmentId" (change)="onModuleDetailSelect(selectedModuleId, selectedEnrollmentId)" class="block w-full px-3 py-2 border border-gray-300 rounded-lg">
+                      <option value="">Choose an enrollment</option>
+                      <option *ngFor="let enrollment of enrollments" [value]="enrollment.id">
+                        {{ (enrollment.user?.name || enrollment.studentName || 'Unknown Student') + ' | ' + (enrollment.user?.email || 'No Email') + ' | ' + (enrollment.course?.title || selectedCourse?.title || 'No Course Title') }}
+                      </option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Select Lesson</label>
+                    <select [(ngModel)]="selectedLessonId" (change)="onLessonDetailSelect(selectedLessonId, selectedCourse?.id)" class="block w-full px-3 py-2 border border-gray-300 rounded-lg">
+                      <option value="">Choose a lesson</option>
+                      <ng-container *ngIf="moduleProgressDetails">
+                        <option *ngFor="let lesson of moduleProgressDetails.lessons" [value]="lesson.lessonId">{{ lesson.lessonTitle }}</option>
+                      </ng-container>
+                    </select>
+                  </div>
+                </div>
+                <div *ngIf="moduleProgressDetails" class="mt-6">
+                  <h4 class="text-md font-semibold mb-2">Module Progress Details</h4>
+                  <div class="space-y-2">
+                    <div><strong>Module:</strong> {{ moduleProgressDetails.moduleTitle }}</div>
+                    <div><strong>Progress:</strong> {{ moduleProgressDetails.progress }}%</div>
+                    <div><strong>Completed Lessons:</strong> {{ moduleProgressDetails.completedLessons }}/{{ moduleProgressDetails.totalLessons }}</div>
+                  </div>
+                  <div class="mt-4">
+                    <h5 class="font-medium mb-2">Lessons</h5>
+                    <ul class="list-disc ml-6">
+                      <li *ngFor="let lesson of moduleProgressDetails.lessons">
+                        {{ lesson.lessonTitle }} <span *ngIf="lesson.isCompleted" class="text-green-600">(Completed)</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div *ngIf="lessonCompletionStats" class="mt-6">
+                  <h4 class="text-md font-semibold mb-2">Lesson Completion Statistics</h4>
+                  <div class="space-y-2">
+                    <div><strong>Lesson:</strong> {{ lessonCompletionStats.lessonTitle }}</div>
+                    <div><strong>Course:</strong> {{ lessonCompletionStats.courseId }}</div>
+                    <div><strong>Total Enrollments:</strong> {{ lessonCompletionStats.totalEnrollments }}</div>
+                    <div><strong>Completed Count:</strong> {{ lessonCompletionStats.completedCount }}</div>
+                    <div><strong>Completion Rate:</strong> {{ lessonCompletionStats.completionRate }}%</div>
+                    <div><strong>Average Time to Complete:</strong> {{ lessonCompletionStats.averageTimeToComplete }} mins</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

@@ -5,6 +5,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
+import { Role } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -42,5 +43,14 @@ export class UsersService {
 
   async findByEmail(email: string) {
     return this.prisma.user.findUnique({ where: { email } });
+  }
+
+  async findByRole(role: string) {
+    console.log('Finding users by role:', role);
+    console.log('Role type:', typeof role);
+    
+    const users = await this.prisma.user.findMany({ where: { role: role as Role } });
+    console.log('Found users:', users);
+    return users;
   }
 } 

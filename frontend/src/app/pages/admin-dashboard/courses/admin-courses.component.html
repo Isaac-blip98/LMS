@@ -1,0 +1,196 @@
+<div class="max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-md">
+  <h2 class="text-2xl font-bold mb-6 text-gray-800">Admin Courses Management</h2>
+
+  <button (click)="openCreateCourse()" class="mb-6 bg-blue-600 text-white px-5 py-2 rounded-lg font-medium shadow hover:bg-blue-700 transition">Create Course</button>
+
+  <div *ngIf="loading" class="text-gray-500 mb-4">Loading courses...</div>
+  <div *ngIf="error" class="text-red-600 mb-4">{{ error }}</div>
+
+  <table *ngIf="!loading && courses.length" class="min-w-full bg-white rounded-lg shadow overflow-hidden mb-6">
+    <thead>
+      <tr class="bg-blue-50 text-blue-700">
+        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Image</th>
+        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Title</th>
+        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Category</th>
+        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Level</th>
+        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Published</th>
+        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let course of courses" class="border-b hover:bg-blue-50">
+        <td class="px-6 py-4">
+          <div class="w-16 h-16 rounded-full overflow-hidden flex items-center justify-center bg-gray-100">
+            <img *ngIf="course.imageUrl" [src]="course.imageUrl" alt="Course" class="w-full h-full object-cover" />
+            <div *ngIf="!course.imageUrl" class="w-full h-full flex items-center justify-center text-gray-400 text-xs bg-gray-200">No Image</div>
+          </div>
+        </td>
+        <td class="px-6 py-4">{{ course.title }}</td>
+        <td class="px-6 py-4">{{ course.category }}</td>
+        <td class="px-6 py-4 capitalize">{{ course.level }}</td>
+        <td class="px-6 py-4">{{ course.isPublished ? 'Yes' : 'No' }}</td>
+        <td class="px-6 py-4">
+          <div class="flex flex-row gap-2 w-full">
+            <button (click)="openEditCourse(course)" class="bg-green-500 text-white py-1 px-2 rounded-lg text-sm font-medium hover:bg-green-600 transition">Edit</button>
+            <button (click)="confirmDeleteCourse(course)" class="bg-red-500 text-white py-1 px-2 rounded-lg text-sm font-medium hover:bg-red-600 transition">Delete</button>
+            <button (click)="openAssignInstructor(course)" class="bg-blue-500 text-white py-1 px-2 rounded-lg text-sm font-medium hover:bg-blue-600 transition">Assign Instructor</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!loading && !courses.length" class="text-gray-500">No courses found.</div>
+
+  <!-- Edit Course Modal -->
+  <div *ngIf="editingCourse" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md max-h-[90vh] overflow-y-auto">
+      <form (ngSubmit)="saveCourseEdit()" class="space-y-4">
+        <h3 class="text-lg font-semibold mb-4">Edit Course</h3>
+        <div>
+          <label class="block text-sm font-medium mb-1">Title:</label>
+          <input [(ngModel)]="editingCourse.title" name="title" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Description:</label>
+          <textarea [(ngModel)]="editingCourse.description" name="description" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"></textarea>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Objectives (comma separated):</label>
+          <input [(ngModel)]="editingCourse.objectives" name="objectives" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Prerequisites (comma separated):</label>
+          <input [(ngModel)]="editingCourse.prerequisites" name="prerequisites" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Level:</label>
+          <select [(ngModel)]="editingCourse.level" name="level" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <option value="BEGINNER">BEGINNER</option>
+            <option value="INTERMEDIATE">INTERMEDIATE</option>
+            <option value="ADVANCED">ADVANCED</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Category:</label>
+          <select [(ngModel)]="editingCourse.category" name="category" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <option value="PROGRAMMING">PROGRAMMING</option>
+            <option value="DESIGN">DESIGN</option>
+            <option value="BUSINESS">BUSINESS</option>
+            <option value="MARKETING">MARKETING</option>
+            <option value="LIFESTYLE">LIFESTYLE</option>
+            <option value="OTHER">OTHER</option>
+          </select>
+        </div>
+        <div class="flex items-center space-x-2">
+          <label class="block text-sm font-medium mb-1">Published:</label>
+          <input type="checkbox" [(ngModel)]="editingCourse.isPublished" name="isPublished" class="form-checkbox h-5 w-5 text-blue-600" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Course Image:</label>
+          <div *ngIf="editingCourse.imageUrl && !imagePreviewUrl" class="mb-2">
+            <img [src]="editingCourse.imageUrl" alt="Current" class="w-32 h-32 object-cover rounded border" />
+            <span class="block text-sm text-gray-500">Current image</span>
+          </div>
+          <input type="file" (change)="onImageSelected($event)" accept="image/*" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          <div *ngIf="imagePreviewUrl" class="mt-2">
+            <img [src]="imagePreviewUrl" alt="Preview" class="w-32 h-32 object-cover rounded border" />
+            <button type="button" (click)="clearImage()" class="ml-2 text-red-600 text-sm hover:text-red-800">Remove</button>
+          </div>
+        </div>
+        <div class="flex justify-end space-x-2">
+          <button type="submit" [disabled]="uploadInProgress" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition disabled:opacity-50">
+            <span *ngIf="uploadInProgress">Saving...</span>
+            <span *ngIf="!uploadInProgress">Save</span>
+          </button>
+          <button type="button" (click)="cancelEditCourse()" [disabled]="uploadInProgress" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition disabled:opacity-50">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Create Course Modal -->
+  <div *ngIf="showCreateCourse" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+      <form (ngSubmit)="createCourse()" class="space-y-4 p-8">
+        <h3 class="text-lg font-semibold mb-4">Create Course</h3>
+        <div>
+          <label class="block text-sm font-medium mb-1">Title:</label>
+          <input [(ngModel)]="newCourse.title" name="courseTitle" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Description:</label>
+          <textarea [(ngModel)]="newCourse.description" name="courseDescription" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"></textarea>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Objectives (comma separated):</label>
+          <input [(ngModel)]="newCourse.objectives" name="courseObjectives" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Prerequisites (comma separated):</label>
+          <input [(ngModel)]="newCourse.prerequisites" name="coursePrerequisites" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Level:</label>
+          <select [(ngModel)]="newCourse.level" name="courseLevel" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <option value="BEGINNER">BEGINNER</option>
+            <option value="INTERMEDIATE">INTERMEDIATE</option>
+            <option value="ADVANCED">ADVANCED</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Category:</label>
+          <select [(ngModel)]="newCourse.category" name="courseCategory" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <option value="PROGRAMMING">PROGRAMMING</option>
+            <option value="DESIGN">DESIGN</option>
+            <option value="BUSINESS">BUSINESS</option>
+            <option value="MARKETING">MARKETING</option>
+            <option value="LIFESTYLE">LIFESTYLE</option>
+            <option value="OTHER">OTHER</option>
+          </select>
+        </div>
+        <div class="flex items-center space-x-2">
+          <label class="block text-sm font-medium mb-1">Published:</label>
+          <input type="checkbox" [(ngModel)]="newCourse.isPublished" name="coursePublished" class="form-checkbox h-5 w-5 text-blue-600" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Course Image:</label>
+          <input type="file" (change)="onImageSelected($event)" accept="image/*" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          <div *ngIf="imagePreviewUrl" class="mt-2">
+            <img [src]="imagePreviewUrl" alt="Preview" class="w-32 h-32 object-cover rounded border" />
+            <button type="button" (click)="clearImage()" class="ml-2 text-red-600 text-sm hover:text-red-800">Remove</button>
+          </div>
+        </div>
+        <div class="flex justify-end space-x-2">
+          <button type="submit" [disabled]="uploadInProgress" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition disabled:opacity-50">
+            <span *ngIf="uploadInProgress">Creating...</span>
+            <span *ngIf="!uploadInProgress">Create</span>
+          </button>
+          <button type="button" (click)="cancelCreateCourse()" [disabled]="uploadInProgress" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition disabled:opacity-50">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Assign Instructor Modal -->
+  <div *ngIf="assigningCourse" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
+      <h3 class="text-lg font-semibold mb-4">Assign Instructor</h3>
+      <form (ngSubmit)="assignInstructor()" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Instructor:</label>
+          <select [(ngModel)]="assignInstructorId" name="instructorId" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <option value="" disabled selected>Select an instructor</option>
+            <option *ngFor="let instructor of instructors" [value]="instructor.id">{{ instructor.name }}</option>
+          </select>
+          <div *ngIf="instructors.length === 0" class="text-sm text-gray-500 mt-1">No instructors available</div>
+          <div *ngIf="instructors.length > 0" class="text-sm text-gray-500 mt-1">{{ instructors.length }} instructor(s) available</div>
+        </div>
+        <div class="flex justify-end space-x-2">
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Assign</button>
+          <button type="button" (click)="cancelAssignInstructor()" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div> 

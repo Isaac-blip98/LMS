@@ -1,0 +1,70 @@
+<div class="max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-md">
+  <h2 class="text-2xl font-bold mb-6 text-gray-800">Admin Analytics</h2>
+
+  <div *ngIf="loading" class="text-gray-500 mb-4">Loading analytics...</div>
+  <div *ngIf="error" class="text-red-600 mb-4">{{ error }}</div>
+
+  <div *ngIf="dashboardStats && !loading">
+    <h3 class="text-lg font-semibold mb-4">Dashboard Stats</h3>
+    <div class="flex flex-row flex-wrap gap-6 justify-center mb-8">
+      <div class="bg-blue-50 rounded-lg p-6 shadow text-center w-64 flex-shrink-0">
+        <div class="text-sm text-gray-500 mb-2">Total Users</div>
+        <div class="text-2xl font-bold text-blue-700">{{ dashboardStats.totalUsers }}</div>
+      </div>
+      <div class="bg-green-50 rounded-lg p-6 shadow text-center w-64 flex-shrink-0">
+        <div class="text-sm text-gray-500 mb-2">Total Courses</div>
+        <div class="text-2xl font-bold text-green-700">{{ dashboardStats.totalCourses }}</div>
+      </div>
+      <div class="bg-yellow-50 rounded-lg p-6 shadow text-center w-64 flex-shrink-0">
+        <div class="text-sm text-gray-500 mb-2">Total Enrollments</div>
+        <div class="text-2xl font-bold text-yellow-700">{{ dashboardStats.totalEnrollments }}</div>
+      </div>
+      <div class="bg-purple-50 rounded-lg p-6 shadow text-center w-64 flex-shrink-0">
+        <div class="text-sm text-gray-500 mb-2">Total Certificates</div>
+        <div class="text-2xl font-bold text-purple-700">{{ dashboardStats.totalCertificates }}</div>
+      </div>
+      <div class="bg-blue-100 rounded-lg p-6 shadow text-center w-64 flex-shrink-0">
+        <div class="text-sm text-gray-500 mb-2">Recent Enrollments</div>
+        <div class="text-2xl font-bold text-blue-800">{{ dashboardStats.recentEnrollments }}</div>
+      </div>
+    </div>
+
+    <h3 class="text-lg font-semibold mb-4">Top Courses</h3>
+    <table class="min-w-full bg-white rounded-lg shadow overflow-hidden mb-6">
+      <thead>
+        <tr class="bg-blue-50 text-blue-700">
+          <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Title</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Enrollments</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let course of dashboardStats.topCourses" class="border-b hover:bg-blue-50">
+          <td class="px-6 py-4">{{ course.title }}</td>
+          <td class="px-6 py-4">{{ course.enrollmentCount }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="popularCourses.length && !loading">
+    <h3 class="text-lg font-semibold mb-4">Popular Courses</h3>
+    <table class="min-w-full bg-white rounded-lg shadow overflow-hidden mb-6">
+      <thead>
+        <tr class="bg-blue-50 text-blue-700">
+          <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Title</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Enrollments</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Completion Rate</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let course of popularCourses" class="border-b hover:bg-blue-50">
+          <td class="px-6 py-4">{{ course.title }}</td>
+          <td class="px-6 py-4">{{ course.enrollmentCount }}</td>
+          <td class="px-6 py-4">{{ course.completionRate }}%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!loading && !popularCourses.length" class="text-gray-500">No analytics data found.</div>
+</div> 

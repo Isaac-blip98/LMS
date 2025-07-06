@@ -32,6 +32,18 @@ Content-Type: application/json
 GET http://localhost:3000/users
 Authorization: Bearer {{ADMIN_TOKEN}}
 
+### Get all instructors only
+GET http://localhost:3000/users?role=INSTRUCTOR
+Authorization: Bearer {{ADMIN_TOKEN}}
+
+### Get all students only
+GET http://localhost:3000/users?role=STUDENT
+Authorization: Bearer {{ADMIN_TOKEN}}
+
+### Get all admins only
+GET http://localhost:3000/users?role=ADMIN
+Authorization: Bearer {{ADMIN_TOKEN}}
+
 ### Get user by ID 
 GET http://localhost:3000/users/{{USER_ID}}
 Authorization: Bearer {{ADMIN_TOKEN}}

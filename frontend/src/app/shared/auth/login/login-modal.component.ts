@@ -3,6 +3,7 @@ import { ModalService } from '../../modal/modal.service';
 import { AuthService } from '../../../Services/auth.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   standalone: true,
@@ -13,6 +14,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 export class LoginModalComponent {
   modalService = inject(ModalService);
   auth = inject(AuthService);
+  router = inject(Router);
   fb = inject(FormBuilder);
 
   loginForm: FormGroup;
@@ -48,6 +50,15 @@ export class LoginModalComponent {
         console.log('Login successful:', res);
         this.loginForm.reset();
         this.close();
+        
+        // Redirect based on user role
+        if (this.auth.isAdmin()) {
+          this.router.navigate(['/admin-dashboard']);
+        } else if (this.auth.isInstructor()) {
+          this.router.navigate(['/instructor/dashboard']);
+        } else {
+          this.router.navigate(['/courses']);
+        }
       },
       error: (err) => {
         console.error('Login failed:', err);

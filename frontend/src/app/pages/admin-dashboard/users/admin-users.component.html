@@ -1,0 +1,74 @@
+<div class="max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-md">
+  <h2 class="text-2xl font-bold mb-6 text-gray-800">Admin Users Management</h2>
+
+  <button (click)="openCreateInstructor()" class="mb-6 bg-blue-600 text-white px-5 py-2 rounded-lg font-medium shadow hover:bg-blue-700 transition">Create Instructor</button>
+
+  <div *ngIf="loading" class="text-gray-500 mb-4">Loading users...</div>
+  <div *ngIf="error" class="text-red-600 mb-4">{{ error }}</div>
+
+  <table *ngIf="!loading && users.length" class="min-w-full bg-white rounded-lg shadow overflow-hidden mb-6">
+    <thead>
+      <tr class="bg-blue-50 text-blue-700">
+        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Name</th>
+        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Email</th>
+        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Role</th>
+        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users" class="border-b hover:bg-blue-50">
+        <td class="px-6 py-4">{{ user.name }}</td>
+        <td class="px-6 py-4">{{ user.email }}</td>
+        <td class="px-6 py-4 capitalize">{{ user.role }}</td>
+        <td class="px-6 py-4 space-x-2">
+          <button (click)="openEditUser(user)" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition">Edit</button>
+          <button (click)="confirmDeleteUser(user)" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!loading && !users.length" class="text-gray-500">No users found.</div>
+
+  <!-- Edit User Modal -->
+  <div *ngIf="editingUser" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
+      <h3 class="text-lg font-semibold mb-4">Edit User</h3>
+      <form (ngSubmit)="saveUserEdit()" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Name:</label>
+          <input [(ngModel)]="editingUser.name" name="name" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        </div>
+        <div class="flex justify-end space-x-2">
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Save</button>
+          <button type="button" (click)="cancelEditUser()" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Create Instructor Modal -->
+  <div *ngIf="showCreateInstructor" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
+      <h3 class="text-lg font-semibold mb-4">Create Instructor</h3>
+      <form (ngSubmit)="createInstructor()" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Name:</label>
+          <input [(ngModel)]="newInstructor.name" name="instructorName" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Email:</label>
+          <input [(ngModel)]="newInstructor.email" name="instructorEmail" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Password:</label>
+          <input [(ngModel)]="newInstructor.password" name="instructorPassword" type="password" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        </div>
+        <div class="flex justify-end space-x-2">
+          <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">Create</button>
+          <button type="button" (click)="cancelCreateInstructor()" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div> 

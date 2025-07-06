@@ -1,0 +1,141 @@
+.admin-dashboard-layout {
+  min-height: 100vh;
+  background: #f6fafd;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-header {
+  height: 64px;
+  background: #1976d2;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.app-logo {
+  font-size: 2rem;
+  margin-right: 0.5rem;
+}
+.app-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.user-avatar {
+  background: #fff;
+  color: #1976d2;
+  font-weight: 700;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  margin-right: 0.3rem;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+}
+.user-name {
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.admin-main {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.admin-sidebar {
+  width: 220px;
+  background: #23395d;
+  color: #fff;
+  padding: 2rem 0.5rem 2rem 0;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 64px);
+  box-shadow: 2px 0 8px rgba(35, 57, 93, 0.07);
+}
+.admin-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.admin-sidebar li {
+  margin-bottom: 1.2rem;
+}
+.admin-sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
+  color: #c3d3e2;
+  font-weight: 500;
+  font-size: 1.08rem;
+  padding: 0.7rem 1.2rem 0.7rem 2.2rem;
+  border-radius: 6px 0 0 6px;
+  transition: background 0.18s, color 0.18s;
+}
+.admin-sidebar a.active, .admin-sidebar a:hover {
+  background: #1976d2;
+  color: #fff;
+}
+.sidebar-icon {
+  font-size: 1.5rem;
+  color: #90caf9;
+  transition: color 0.18s;
+}
+.admin-sidebar a.active .sidebar-icon, .admin-sidebar a:hover .sidebar-icon {
+  color: #fff;
+}
+
+.admin-content {
+  flex: 1;
+  padding: 2.5rem 2.5rem 2.5rem 2rem;
+  background: #f6fafd;
+  min-height: calc(100vh - 64px);
+  overflow-x: auto;
+  border-radius: 0 0 0 0;
+}
+
+@media (max-width: 900px) {
+  .admin-main {
+    flex-direction: column;
+  }
+  .admin-sidebar {
+    width: 100%;
+    min-height: unset;
+    flex-direction: row;
+    padding: 0.5rem 0;
+    box-shadow: none;
+    background: #23395d;
+  }
+  .admin-sidebar ul {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    width: 100%;
+    justify-content: space-around;
+  }
+  .admin-sidebar li {
+    margin-bottom: 0;
+  }
+  .admin-content {
+    padding: 1.2rem 0.5rem;
+  }
+} 

@@ -10,4 +10,7 @@ export class PopularCourseDto {
 
   @ApiProperty()
   enrollmentCount: number;
+
+  @ApiProperty()
+  completionRate: number;
 }
