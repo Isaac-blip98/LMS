@@ -38,10 +38,9 @@ export class RegisterModalComponent {
     }
     this.isLoading = true;
     this.auth.register(this.name, this.email, this.password).subscribe({
-      next: (res) => {
+      next: () => {
         this.successMessage = 'Registration successful!';
         this.isLoading = false;
-        console.log('Registration successful:', res);
         setTimeout(() => this.close(), 2000); 
       },
       error: (err) => {

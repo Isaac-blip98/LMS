@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ModalService } from '../../../shared/modal/modal.service';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../../Services/auth.service';
 
 @Component({
@@ -19,7 +19,8 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     public modalService: ModalService,
-    public authService: AuthService
+    public authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -44,8 +45,10 @@ export class HeaderComponent implements OnInit {
 
   logout() {
     this.authService.logout();
-
     this.userName = null;
-
+    this.menuOpen = false;
+    
+    // Navigate to home page after logout
+    this.router.navigate(['/']);
   }
 }

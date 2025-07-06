@@ -1,0 +1,168 @@
+<app-header></app-header>
+
+<div class="flex min-h-screen pt-16">
+
+  <app-sidebar></app-sidebar>
+  
+  <main class="flex-1">
+    <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+
+      <div class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between items-center py-6">
+            <div>
+              <h1 class="text-3xl font-bold text-gray-900">My Quizzes</h1>
+              <p class="text-gray-600 mt-1">Track your quiz performance and learning progress</p>
+            </div>
+            <div class="flex items-center space-x-4">
+              <button routerLink="/courses" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                </svg>
+                Take More Quizzes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <div *ngIf="isLoading" class="flex justify-center items-center py-12">
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+          <span class="ml-3 text-gray-600">Loading quiz data...</span>
+        </div>
+
+        <div *ngIf="error && !isLoading" class="bg-red-50 border border-red-200 rounded-lg p-6 mb-8">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <svg class="w-6 h-6 text-red-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <div>
+                <h3 class="text-lg font-medium text-red-800">Error Loading Quizzes</h3>
+                <p class="text-red-700 mt-1">{{ error }}</p>
+              </div>
+            </div>
+            <button 
+              (click)="loadQuizAttempts()"
+              class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm font-medium">
+              Retry
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="!isLoading && !error">
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div class="flex items-center">
+                <div class="p-2 bg-blue-100 rounded-lg">
+                  <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                  </svg>
+                </div>
+                <div class="ml-4">
+                  <p class="text-sm font-medium text-gray-600">Total Quizzes</p>
+                  <p class="text-2xl font-bold text-gray-900">{{ quizAttempts.length }}</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div class="flex items-center">
+                <div class="p-2 bg-green-100 rounded-lg">
+                  <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                  </svg>
+                </div>
+                <div class="ml-4">
+                  <p class="text-sm font-medium text-gray-600">Average Score</p>
+                  <p class="text-2xl font-bold text-gray-900">
+                    {{ averageScore }}%
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div class="flex items-center">
+                <div class="p-2 bg-purple-100 rounded-lg">
+                  <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                </div>
+                <div class="ml-4">
+                  <p class="text-sm font-medium text-gray-600">Total Questions</p>
+                  <p class="text-2xl font-bold text-gray-900">{{ totalQuestions }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+            <div class="px-6 py-4 border-b border-gray-200">
+              <h3 class="text-lg font-semibold text-gray-900">Quiz Attempts</h3>
+            </div>
+            <div class="p-6">
+              <div *ngIf="quizAttempts.length === 0" class="text-center py-8">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">No quiz attempts yet</h3>
+                <p class="mt-1 text-sm text-gray-500">Start taking quizzes to track your learning progress and see your results here.</p>
+                <div class="mt-6">
+                  <button routerLink="/courses" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                    Browse Courses
+                  </button>
+                </div>
+              </div>
+
+              <div *ngIf="quizAttempts.length > 0" class="space-y-4">
+                <div *ngFor="let attempt of quizAttempts" class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                  <div class="flex justify-between items-start mb-4">
+                    <div class="flex-1">
+                      <h4 class="text-lg font-semibold text-gray-900">{{ attempt.quizTitle }}</h4>
+                      <p class="text-sm text-gray-600 mt-1">Completed on {{ formatDate(attempt.completedAt) }}</p>
+                    </div>
+                    <div class="text-right">
+                      <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium" [ngClass]="getScoreBadgeColor(attempt.score)">
+                        {{ attempt.score }}%
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div class="text-center">
+                      <p class="text-sm text-gray-600">Questions</p>
+                      <p class="text-lg font-semibold text-gray-900">{{ attempt.totalQuestions }}</p>
+                    </div>
+                    <div class="text-center">
+                      <p class="text-sm text-gray-600">Correct</p>
+                      <p class="text-lg font-semibold text-green-600">{{ attempt.correctAnswers }}</p>
+                    </div>
+                    <div class="text-center">
+                      <p class="text-sm text-gray-600">Time Spent</p>
+                      <p class="text-lg font-semibold text-gray-900">{{ formatTime(attempt.timeSpent) }}</p>
+                    </div>
+                  </div>
+                  
+                  <div class="flex items-center justify-between">
+                    <p class="text-sm font-medium" [ngClass]="getScoreColor(attempt.score)">
+                      {{ getPerformanceMessage(attempt.score) }}
+                    </p>
+                    <button 
+                      [routerLink]="['/quizzes', attempt.quizId, 'review']"
+                      class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
+                      Review Answers →
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div> 
