@@ -19,6 +19,13 @@ export class AnalyticsController {
     return this.analyticsService.getStudentProgress(userId);
   }
 
+  @Get('student/:userId/dashboard-stats')
+  @ApiParam({ name: 'userId', type: String })
+  @ApiOkResponse({ description: 'Student dashboard statistics' })
+  getStudentDashboardStats(@Param('userId') userId: string) {
+    return this.analyticsService.getStudentDashboardStats(userId);
+  }
+
   @Get('course/:courseId/completion-rate')
   @ApiParam({ name: 'courseId', type: String })
   @ApiOkResponse({ type: CourseCompletionRateDto })

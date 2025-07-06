@@ -1,0 +1,21 @@
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+  <h3 class="text-lg font-semibold text-gray-900 mb-4">Learning Summary</h3>
+  <div class="space-y-4">
+    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+      <span class="text-sm text-gray-600">Status:</span>
+      <span class="font-medium text-green-600 bg-green-100 px-2 py-1 rounded-full text-xs">{{ summary?.status || 'Active' }}</span>
+    </div>
+    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+      <span class="text-sm text-gray-600">Level:</span>
+      <span class="font-medium text-gray-900">{{ summary?.level || 'BEGINNER' }}</span>
+    </div>
+    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+      <span class="text-sm text-gray-600">Focus Area:</span>
+      <span class="font-medium text-gray-900">{{ summary?.focusArea || 'PROGRAMMING' }}</span>
+    </div>
+    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+      <span class="text-sm text-gray-600">Learning Streak:</span>
+      <span class="font-medium text-blue-600">{{ summary?.learningStreak || 0 }} days</span>
+    </div>
+  </div>
+</div>

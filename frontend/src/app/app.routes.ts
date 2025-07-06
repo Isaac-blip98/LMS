@@ -30,8 +30,39 @@ export const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
-  // {
-  //   path: 'courses/:id',
-  //   component: CourseDetailsComponent,
-  // },
+  {
+    path: 'student/dashboard',
+    loadComponent: () =>
+      import('./pages/student-dashboard/dashboard/dashboard.component').then(m => m.Dashboard),
+    canActivate: [AuthGuard], 
+    data: { roles: ['STUDENT'] }, 
+  },
+  {
+    path: 'student/courses',
+    loadComponent: () =>
+      import('./pages/student-dashboard/courses/courses.component').then(m => m.StudentCoursesComponent),
+    canActivate: [AuthGuard], 
+    data: { roles: ['STUDENT'] }, 
+  },
+  {
+    path: 'student/progress',
+    loadComponent: () =>
+      import('./pages/student-dashboard/progress/progress.component').then(m => m.StudentProgressComponent),
+    canActivate: [AuthGuard], 
+    data: { roles: ['STUDENT'] }, 
+  },
+  {
+    path: 'student/quizzes',
+    loadComponent: () =>
+      import('./pages/student-dashboard/quizzes/quizzes.component').then(m => m.StudentQuizzesComponent),
+    canActivate: [AuthGuard], 
+    data: { roles: ['STUDENT'] }, 
+  },
+  {
+    path: 'student/certificates',
+    loadComponent: () =>
+      import('./pages/student-dashboard/certificates/certificates.component').then(m => m.StudentCertificatesComponent),
+    canActivate: [AuthGuard], 
+    data: { roles: ['STUDENT'] }, 
+  }
 ];

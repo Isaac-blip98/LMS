@@ -437,4 +437,57 @@ export class AnalyticsService {
       byCourse
     };
   }
+
+  async getStudentDashboardStats(userId: string) {
+    const enrollments = await this.prisma.enrollment.findMany({
+      where: { userId },
+      include: {
+        course: {
+          include: {
+            modules: {
+              include: { lessons: true },
+            },
+          },
+        },
+        progress: true,
+      },
+    });
+
+    const totalCourses = enrollments.length;
+    const completedCourses = enrollments.filter(enroll => {
+      const totalLessons = enroll.course.modules.flatMap(m => m.lessons).length;
+      const completedLessons = enroll.progress.filter(p => p.completed).length;
+      return totalLessons > 0 && completedLessons === totalLessons;
+    }).length;
+
+    const totalProgress = totalCourses > 0 
+      ? Math.round(enrollments.reduce((sum, enroll) => {
+          const totalLessons = enroll.course.modules.flatMap(m => m.lessons).length;
+          const completedLessons = enroll.progress.filter(p => p.completed).length;
+          const progress = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
+          return sum + progress;
+        }, 0) / totalCourses)
+      : 0;
+
+    // Get average quiz score from quiz attempts
+    const quizAttempts = await this.prisma.quizAttempt.findMany({
+      where: { userId },
+      select: { score: true }
+    });
+
+    const validScores = quizAttempts
+      .map(attempt => attempt.score)
+      .filter(score => score !== null) as number[];
+
+    const averageGrade = validScores.length > 0
+      ? Math.round(validScores.reduce((sum, score) => sum + score, 0) / validScores.length)
+      : 0;
+
+    return {
+      enrolledCourses: totalCourses,
+      completedCourses,
+      totalProgress,
+      averageGrade
+    };
+  }
 }
