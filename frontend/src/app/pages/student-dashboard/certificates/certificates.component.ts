@@ -46,7 +46,7 @@ export class StudentCertificatesComponent implements OnInit {
       return;
     }
 
-    this.studentService.getMyCertificates().subscribe({
+    this.studentService.getMyCertificates(currentUser.id).subscribe({
       next: (certificates: Certificate[]) => {
         this.certificates = certificates || [];
         this.error = null; // Clear any previous errors

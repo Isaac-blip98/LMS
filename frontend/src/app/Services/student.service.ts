@@ -109,12 +109,20 @@ export class StudentService {
     return this.http.get<Enrollment[]>(`${this.baseUrl}/enrollments/my-enrollments`);
   }
 
-  getMyQuizAttempts(): Observable<QuizAttempt[]> {
-    return this.http.get<QuizAttempt[]>(`${this.baseUrl}/quizzes/my-attempts`);
+  getMyQuizAttempts(userId: string): Observable<QuizAttempt[]> {
+    return this.http.get<QuizAttempt[]>(`${this.baseUrl}/quizzes/attempts/user/${userId}`);
   }
 
-  getMyCertificates(): Observable<Certificate[]> {
-    return this.http.get<Certificate[]>(`${this.baseUrl}/certificates/my-certificates`);
+  getQuizzesForCourse(courseId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/quizzes/course/${courseId}`);
+  }
+
+  createQuizAttempt(attempt: { userId: string; quizId: string; answers: any[] }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/quizzes/attempts`, attempt);
+  }
+
+  getMyCertificates(userId: string): Observable<Certificate[]> {
+    return this.http.get<Certificate[]>(`${this.baseUrl}/enrollments/certificates/${userId}`);
   }
 
   getLearningPath(userId: string): Observable<any> {

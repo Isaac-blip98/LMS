@@ -5,17 +5,25 @@ import { Sidebar } from '../sidebar/sidebar.component';
 import { HeaderComponent } from '../../../core/layout/header/header.component';
 import { StudentService, QuizAttempt } from '../../../Services/student.service';
 import { AuthService } from '../../../Services/auth.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-student-quizzes',
   standalone: true,
-  imports: [CommonModule, RouterModule, Sidebar, HeaderComponent],
+  imports: [CommonModule, RouterModule, Sidebar, HeaderComponent, FormsModule],
   templateUrl: './quizzes.component.html',
 })
 export class StudentQuizzesComponent implements OnInit {
   quizAttempts: QuizAttempt[] = [];
   isLoading = true;
   error: string | null = null;
+
+  // New state for course quizzes
+  enrolledCourses: any[] = [];
+  selectedCourseId: string | null = null;
+  courseQuizzes: any[] = [];
+  quizAnswers: { [quizId: string]: { [questionId: string]: string } } = {};
+  submittingAttempt: boolean = false;
 
   constructor(
     private studentService: StudentService,
@@ -24,6 +32,7 @@ export class StudentQuizzesComponent implements OnInit {
 
   ngOnInit() {
     this.loadQuizAttempts();
+    this.loadEnrolledCourses();
   }
 
   // Computed properties for template
@@ -45,7 +54,7 @@ export class StudentQuizzesComponent implements OnInit {
       return;
     }
 
-    this.studentService.getMyQuizAttempts().subscribe({
+    this.studentService.getMyQuizAttempts(currentUser.id).subscribe({
       next: (attempts: QuizAttempt[]) => {
         this.quizAttempts = attempts || [];
         this.error = null; // Clear any previous errors
@@ -102,5 +111,59 @@ export class StudentQuizzesComponent implements OnInit {
     if (score >= 70) return 'Good work!';
     if (score >= 60) return 'Keep practicing!';
     return 'Review the material and try again.';
+  }
+
+  loadEnrolledCourses() {
+    this.studentService.getMyEnrollments().subscribe({
+      next: (enrollments) => {
+        this.enrolledCourses = enrollments.map(e => ({ id: e.courseId, title: e.course.title }));
+      },
+      error: (err) => {
+        console.error('Failed to load courses', err);
+      }
+    });
+  }
+
+  onSelectCourse(courseId: string) {
+    this.selectedCourseId = courseId;
+    this.loadQuizzesForCourse(courseId);
+  }
+
+  loadQuizzesForCourse(courseId: string) {
+    this.studentService.getQuizzesForCourse(courseId).subscribe({
+      next: (quizzes) => {
+        this.courseQuizzes = quizzes;
+      },
+      error: (err) => {
+        this.courseQuizzes = [];
+        console.error('Failed to load quizzes for course', err);
+      }
+    });
+  }
+
+  setQuizAnswer(quizId: string, questionId: string, answer: string) {
+    if (!this.quizAnswers[quizId]) this.quizAnswers[quizId] = {};
+    this.quizAnswers[quizId][questionId] = answer;
+  }
+
+  submitQuizAttempt(quiz: any) {
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser?.id) return;
+    const answers = Object.entries(this.quizAnswers[quiz.id] || {}).map(([questionId, answer]) => ({ questionId, answer }));
+    this.submittingAttempt = true;
+    this.studentService.createQuizAttempt({
+      userId: currentUser.id,
+      quizId: quiz.id,
+      answers
+    }).subscribe({
+      next: () => {
+        this.submittingAttempt = false;
+        this.loadQuizAttempts(); // Refresh attempts
+      },
+      error: (err) => {
+        this.submittingAttempt = false;
+        console.error('Failed to submit quiz attempt', err);
+      }
+    });
   }
 } 
