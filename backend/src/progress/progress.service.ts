@@ -161,6 +161,30 @@ export class ProgressService {
     };
   }
 
+  async getCompletedLessonIds(enrollmentId: string, userId?: string): Promise<string[]> {
+    // Validate enrollment ownership if userId is provided
+    if (userId) {
+      await this.validateEnrollmentOwnership(enrollmentId, userId);
+    } else {
+      const enrollment = await this.prisma.enrollment.findUnique({
+        where: { id: enrollmentId },
+      });
+      if (!enrollment) throw new NotFoundException('Enrollment not found');
+    }
+
+    const completedProgress = await this.prisma.progress.findMany({
+      where: {
+        enrollmentId,
+        completed: true,
+      },
+      select: {
+        lessonId: true,
+      },
+    });
+
+    return completedProgress.map(p => p.lessonId);
+  }
+
   async getUserAllCoursesProgress(userId: string) {
     const enrollments = await this.prisma.enrollment.findMany({
       where: { userId },
