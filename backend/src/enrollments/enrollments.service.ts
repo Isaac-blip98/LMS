@@ -37,17 +37,17 @@ export class EnrollmentsService {
     });
   }
   async unenrollUser(enrollmentId: string) {
-    console.log('EnrollmentsService.unenrollUser', { enrollmentId });
+   
     return this.prisma.enrollment.delete({ where: { id: enrollmentId } });
   }
 
   // Progress
   async getProgress(enrollmentId: string) {
-    console.log('EnrollmentsService.getProgress', { enrollmentId });
+   
     return this.prisma.progress.findMany({ where: { enrollmentId } });
   }
   async markLessonComplete(enrollmentId: string, lessonId: string) {
-    console.log('EnrollmentsService.markLessonComplete', { enrollmentId, lessonId });
+
     return this.prisma.progress.upsert({
       where: { enrollmentId_lessonId: { enrollmentId, lessonId } },
       update: { completed: true },
@@ -57,7 +57,6 @@ export class EnrollmentsService {
 
   // Certificates
   async getCertificatesByUser(userId: string, user: UserFromJwt) {
-    console.log('EnrollmentsService.getCertificatesByUser', { userId, user });
     // Students can only see their own certificates
     if (user.role === 'STUDENT' && user.userId !== userId) {
       throw new ForbiddenException('You can only view your own certificates');
@@ -91,7 +90,6 @@ export class EnrollmentsService {
   }
   
   async issueCertificate(userId: string, courseId: string, certificateUrl: string) {
-    console.log('EnrollmentsService.issueCertificate', { userId, courseId, certificateUrl });
     
     // Create the certificate first to get the ID
     const certificate = await this.prisma.certificate.create({ 
