@@ -17,6 +17,7 @@ import { AdminAnalyticsComponent } from './pages/admin-dashboard/analytics/admin
 import { AdminEnrollmentsComponent } from './pages/admin-dashboard/enrollments/admin-enrollments.component';
 import { AdminReviewsComponent } from './pages/admin-dashboard/reviews/admin-reviews.component';
 import { AdminCertificatesComponent } from './pages/admin-dashboard/certificates/admin-certificates.component';
+import { AboutComponent } from './pages/about/about.component';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent },
@@ -95,4 +96,5 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     data: { roles: ['STUDENT'] },
   },
+  { path: 'about', loadComponent: () => import('./pages/about/about.component').then(m => m.AboutComponent) },
 ];

@@ -22,9 +22,9 @@
           >Courses</a
         >
         <a
-          (click)="modalService.openLogin()"
-          class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium cursor-pointer"
-          >Add Course</a
+          routerLink="/about"
+          class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium"
+          >About Us</a
         >
 
         <ng-container *ngIf="!isLoggedIn">
@@ -140,9 +140,9 @@
         >Courses</a
       >
       <a
-        (click)="modalService.openLogin()"
-        class="block text-gray-700 hover:text-blue-600 text-sm font-medium cursor-pointer"
-        >Add Course</a
+        routerLink="/about"
+        class="block text-gray-700 hover:text-blue-600 text-sm font-medium"
+        >About Us</a
       >
 
       <ng-container *ngIf="!isLoggedIn; else mobileUserMenu">
