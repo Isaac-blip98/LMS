@@ -167,18 +167,7 @@ export class StudentService {
     };
   }
 
-  // Fetch modules for a course (for student access)
-  getCourseModules(courseId: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/content/courses/${courseId}/modules`);
-  }
-
-  // Fetch lessons for a module (for student access)
-  getModuleLessons(moduleId: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/content/modules/${moduleId}/lessons`);
-  }
-
-  // Fetch a lesson by its ID (for student access)
-  getLessonById(lessonId: string): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/lessons/${lessonId}`);
+  enrollInCourse(courseId: string) {
+    return this.http.post(`${this.baseUrl}/enrollments/enroll`, { courseId });
   }
 } 
