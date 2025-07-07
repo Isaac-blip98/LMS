@@ -87,5 +87,12 @@ export const routes: Routes = [
       import('./pages/student-dashboard/certificates/certificates.component').then(m => m.StudentCertificatesComponent),
     canActivate: [AuthGuard], 
     data: { roles: ['STUDENT'] }, 
-  }
+  },
+  {
+    path: 'student/lesson/:lessonId',
+    loadComponent: () =>
+      import('./pages/student-dashboard/lesson-view.component').then(m => m.StudentLessonViewComponent),
+    canActivate: [AuthGuard],
+    data: { roles: ['STUDENT'] },
+  },
 ];

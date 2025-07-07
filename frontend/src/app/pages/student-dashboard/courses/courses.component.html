@@ -104,6 +104,46 @@
                     class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">
                     View Progress
                   </button>
+                  <button 
+                    (click)="expandAllCourseContent(enrollment.course.id)"
+                    class="px-4 py-2 border border-blue-400 text-blue-700 rounded-lg hover:bg-blue-50 transition-colors text-sm font-medium">
+                    View Course Content
+                  </button>
+                </div>
+
+                <!-- Expandable Modules/Lessons UI -->
+                <div class="mt-4">
+                  <button (click)="toggleCourse(enrollment.course.id)" class="text-blue-600 hover:underline text-sm">
+                    {{ expandedCourses[enrollment.course.id] ? 'Hide Modules' : 'Show Modules & Lessons' }}
+                  </button>
+                  <div *ngIf="expandedCourses[enrollment.course.id]">
+                    <div *ngIf="!courseModules[enrollment.course.id]">Loading modules...</div>
+                    <div *ngIf="courseModules[enrollment.course.id] && courseModules[enrollment.course.id].length === 0" class="text-gray-500 text-xs mt-2">No modules found.</div>
+                    <ul *ngIf="courseModules[enrollment.course.id] && courseModules[enrollment.course.id].length > 0" class="ml-4 mt-2 space-y-2">
+                      <li *ngFor="let module of courseModules[enrollment.course.id]">
+                        <ng-container *ngIf="module">
+                          <div class="flex items-center">
+                            <button (click)="toggleModule(module.id, enrollment.course.id)" class="text-indigo-600 hover:underline text-xs mr-2">
+                              {{ expandedModules[module.id] ? '▼' : '►' }}
+                            </button>
+                            <span class="font-semibold text-gray-800 text-sm">{{ module.title }}</span>
+                          </div>
+                          <div *ngIf="expandedModules[module.id]">
+                            <div *ngIf="!moduleLessons[module.id]">Loading lessons...</div>
+                            <div *ngIf="moduleLessons[module.id] && moduleLessons[module.id].length === 0" class="text-gray-400 text-xs ml-4">No lessons found.</div>
+                            <ul *ngIf="moduleLessons[module.id] && moduleLessons[module.id].length > 0" class="ml-6 mt-1 space-y-1">
+                              <li *ngFor="let lesson of moduleLessons[module.id]" class="flex items-center space-x-2">
+                                <button (click)="onLessonClick(lesson)" class="text-blue-700 hover:underline text-xs">
+                                  {{ lesson.title }}
+                                </button>
+                                <span class="text-gray-400 text-xs">({{ lesson.type }})</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </ng-container>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
