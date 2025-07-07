@@ -50,28 +50,14 @@ export class StudentCoursesComponent implements OnInit {
   toggleCourse(courseId: string) {
     this.expandedCourses[courseId] = !this.expandedCourses[courseId];
     if (this.expandedCourses[courseId] && !this.courseModules[courseId]) {
-      this.studentService.getCourseModules(courseId).subscribe({
-        next: (modules) => {
-          this.courseModules[courseId] = modules;
-        },
-        error: (err) => {
-          console.error('Error loading modules:', err);
-        }
-      });
+      // Placeholder for loading modules
     }
   }
 
   toggleModule(moduleId: string, courseId: string) {
     this.expandedModules[moduleId] = !this.expandedModules[moduleId];
     if (this.expandedModules[moduleId] && !this.moduleLessons[moduleId]) {
-      this.studentService.getModuleLessons(moduleId).subscribe({
-        next: (lessons) => {
-          this.moduleLessons[moduleId] = lessons;
-        },
-        error: (err) => {
-          console.error('Error loading lessons:', err);
-        }
-      });
+      // Placeholder for loading lessons
     }
   }
 
@@ -90,48 +76,5 @@ export class StudentCoursesComponent implements OnInit {
   // Placeholder for lesson click navigation
   onLessonClick(lesson: any) {
     this.router.navigate(['/student/lesson', lesson.id]);
-  }
-
-  expandAllCourseContent(courseId: string) {
-    this.expandedCourses[courseId] = true;
-    if (!this.courseModules[courseId]) {
-      this.studentService.getCourseModules(courseId).subscribe({
-        next: (modules) => {
-          this.courseModules[courseId] = modules;
-          // Expand all modules and load lessons
-          modules.forEach((module: any) => {
-            this.expandedModules[module.id] = true;
-            if (!this.moduleLessons[module.id]) {
-              this.studentService.getModuleLessons(module.id).subscribe({
-                next: (lessons) => {
-                  this.moduleLessons[module.id] = lessons;
-                },
-                error: (err) => {
-                  console.error('Error loading lessons:', err);
-                }
-              });
-            }
-          });
-        },
-        error: (err) => {
-          console.error('Error loading modules:', err);
-        }
-      });
-    } else {
-      // Expand all modules and load lessons if already fetched
-      this.courseModules[courseId].forEach((module: any) => {
-        this.expandedModules[module.id] = true;
-        if (!this.moduleLessons[module.id]) {
-          this.studentService.getModuleLessons(module.id).subscribe({
-            next: (lessons) => {
-              this.moduleLessons[module.id] = lessons;
-            },
-            error: (err) => {
-              console.error('Error loading lessons:', err);
-            }
-          });
-        }
-      });
-    }
   }
 } 

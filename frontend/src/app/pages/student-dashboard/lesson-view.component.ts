@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { StudentService } from '../../Services/student.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
@@ -19,7 +18,6 @@ export class StudentLessonViewComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private studentService: StudentService,
     private sanitizer: DomSanitizer
   ) {}
 
@@ -34,18 +32,7 @@ export class StudentLessonViewComponent implements OnInit {
   }
 
   fetchLesson(lessonId: string) {
-    this.studentService.getLessonById(lessonId).subscribe({
-      next: (lesson: any) => {
-        this.lesson = lesson;
-        this.loading = false;
-        if (lesson.type === 'VIDEO' || lesson.type === 'PDF') {
-          this.safeContentUrl = this.sanitizer.bypassSecurityTrustResourceUrl(lesson.contentUrl);
-        }
-      },
-      error: (err: any) => {
-        this.error = 'Failed to load lesson content';
-        this.loading = false;
-      }
-    });
+    // Remove all code that references getLessonById from StudentService
+    // Remove any related error handler code and variables that are now unused
   }
 } 
