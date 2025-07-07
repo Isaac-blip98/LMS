@@ -13,22 +13,18 @@ export class EnrollmentsService {
 
   // Enrollments
   async enrollUser(userId: string, courseId: string) {
-    console.log('EnrollmentsService.enrollUser', { userId, courseId });
     return this.prisma.enrollment.create({ data: { userId, courseId } });
   }
   async getEnrollmentsByUser(userId: string) {
-    console.log('EnrollmentsService.getEnrollmentsByUser', { userId });
     return this.prisma.enrollment.findMany({ where: { userId } });
   }
   async getEnrollmentsByCourse(courseId: string) {
-    console.log('EnrollmentsService.getEnrollmentsByCourse', { courseId });
     return this.prisma.enrollment.findMany({
       where: { courseId },
       include: { user: true }
     });
   }
   async getAllEnrollments() {
-    console.log('EnrollmentsService.getAllEnrollments');
     return this.prisma.enrollment.findMany({
       include: {
         user: true,
@@ -37,17 +33,14 @@ export class EnrollmentsService {
     });
   }
   async unenrollUser(enrollmentId: string) {
-   
     return this.prisma.enrollment.delete({ where: { id: enrollmentId } });
   }
 
   // Progress
   async getProgress(enrollmentId: string) {
-   
     return this.prisma.progress.findMany({ where: { enrollmentId } });
   }
   async markLessonComplete(enrollmentId: string, lessonId: string) {
-
     return this.prisma.progress.upsert({
       where: { enrollmentId_lessonId: { enrollmentId, lessonId } },
       update: { completed: true },
