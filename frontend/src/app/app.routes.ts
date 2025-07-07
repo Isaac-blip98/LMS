@@ -38,6 +38,7 @@ export const routes: Routes = [
     ]
   },
   {
+
     path: 'admin-dashboard',
     component: AdminDashboardComponent,
     canActivate: [AuthGuard],
@@ -55,5 +56,5 @@ export const routes: Routes = [
   // {
   //   path: 'courses/:id',
   //   component: CourseDetailsComponent,
-  // },
+  // }
 ];

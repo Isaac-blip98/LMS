@@ -46,8 +46,7 @@ export class LoginModalComponent {
     this.errorMessage = '';
 
     this.auth.login(email, password).subscribe({
-      next: (res) => {
-        console.log('Login successful:', res);
+      next: () => {
         this.loginForm.reset();
         this.close();
         

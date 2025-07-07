@@ -5,7 +5,7 @@
         <div
           class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center"
         >
-          <i class="fas fa-graduation-cap text-white text-sm"></i>
+            <i class="fas fa-bolt text-white text-lg"></i>
         </div>
         <span class="ml-2 text-xl font-bold text-gray-900">LearningHub</span>
       </div>
@@ -42,7 +42,6 @@
         </ng-container>
       </nav>
 
-      <!-- Profile Dropdown -->
       <div *ngIf="isLoggedIn" class="hidden md:flex items-center space-x-4">
         <div class="relative group">
           <button
@@ -88,6 +87,12 @@
               >Dashboard</a
             >
             <a
+              *ngIf="authService.isStudent()"
+              routerLink="/student/dashboard"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >Dashboard</a
+            >
+            <a
               routerLink="/profile"
               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >Profile</a
@@ -102,7 +107,6 @@
         </div>
       </div>
 
-      <!-- Mobile menu toggle -->
       <div class="md:hidden">
         <button (click)="toggleMenu()" aria-label="Toggle menu">
           <svg
@@ -164,6 +168,12 @@
         <a
           *ngIf="authService.isInstructor() || authService.isAdmin()"
           routerLink="/instructor/dashboard"
+          class="block text-gray-700 hover:text-blue-600 text-sm font-medium"
+          >Dashboard</a
+        >
+        <a
+          *ngIf="authService.isStudent()"
+          routerLink="/student/dashboard"
           class="block text-gray-700 hover:text-blue-600 text-sm font-medium"
           >Dashboard</a
         >
