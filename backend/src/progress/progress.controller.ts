@@ -58,6 +58,15 @@ export class ProgressController {
     return this.progressService.getUserCourseProgress(enrollmentId, user.userId);
   }
 
+  @Get('enrollment/:enrollmentId/completed-lessons')
+  @Roles(Role.STUDENT, Role.INSTRUCTOR, Role.ADMIN)
+  @ApiParam({ name: 'enrollmentId', type: String })
+  @ApiOperation({ summary: 'Get completed lesson IDs for an enrollment (Student/Instructor/Admin)' })
+  @ApiResponse({ status: 200, description: 'Array of completed lesson IDs' })
+  getCompletedLessonIds(@Param('enrollmentId') enrollmentId: string, @CurrentUser() user: UserFromJwt) {
+    return this.progressService.getCompletedLessonIds(enrollmentId, user.userId);
+  }
+
   @Get('user/:userId/all-courses')
   @Roles(Role.STUDENT, Role.INSTRUCTOR, Role.ADMIN)
   @ApiParam({ name: 'userId', type: String })

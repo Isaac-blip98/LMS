@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export interface StudentDashboardStats {
   enrolledCourses: number;
@@ -56,7 +57,7 @@ export interface Enrollment {
   progress: number;
   completedLessons: number;
   totalLessons: number;
-  course: {
+  course?: {
     id: string;
     title: string;
     description: string;
@@ -169,5 +170,34 @@ export class StudentService {
 
   enrollInCourse(courseId: string) {
     return this.http.post(`${this.baseUrl}/enrollments/enroll`, { courseId });
+  }
+
+  // Progress tracking methods
+  markLessonComplete(enrollmentId: string, lessonId: string) {
+    return this.http.post(`${this.baseUrl}/progress/mark-complete`, {
+      enrollmentId,
+      lessonId
+    });
+  }
+
+  markLessonIncomplete(enrollmentId: string, lessonId: string) {
+    return this.http.post(`${this.baseUrl}/progress/mark-incomplete`, {
+      enrollmentId,
+      lessonId
+    });
+  }
+
+  getEnrollmentByCourse(courseId: string): Observable<Enrollment | null> {
+    return this.http.get<Enrollment[]>(`${this.baseUrl}/enrollments/my-enrollments`).pipe(
+      map(enrollments => enrollments.find(e => e.courseId === courseId) || null)
+    );
+  }
+
+  getCourseProgress(enrollmentId: string) {
+    return this.http.get(`${this.baseUrl}/progress/enrollment/${enrollmentId}`);
+  }
+
+  getCompletedLessonIds(enrollmentId: string) {
+    return this.http.get<string[]>(`${this.baseUrl}/progress/enrollment/${enrollmentId}/completed-lessons`);
   }
 } 

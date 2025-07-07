@@ -24,7 +24,6 @@ export class CloudinaryService {
     if (mimetype) {
       if (mimetype.startsWith('image/')) resourceType = 'image';
       else if (mimetype.startsWith('video/')) resourceType = 'video';
-      else if (mimetype === 'application/pdf') resourceType = 'image';
       else resourceType = 'raw';
     }
     return new Promise((resolve, reject) => {
@@ -46,8 +45,12 @@ export class CloudinaryService {
     if (publicId) {
       options.public_id = publicId;
     }
-    if ((mimetype && mimetype === 'application/pdf') || url.toLowerCase().endsWith('.pdf')) {
-      options.resource_type = 'image';
+    if (mimetype) {
+      if (mimetype.startsWith('image/')) options.resource_type = 'image';
+      else if (mimetype.startsWith('video/')) options.resource_type = 'video';
+      else options.resource_type = 'raw';
+    } else if (url.toLowerCase().endsWith('.pdf')) {
+      options.resource_type = 'raw';
     }
 
     return new Promise((resolve, reject) => {

@@ -1,0 +1,142 @@
+<main class="max-w-5xl mx-auto px-4 py-12">
+  <button (click)="router.navigate(['/student/courses'])" class="mb-4 text-indigo-600 hover:underline">
+    &larr; Back to My Courses
+  </button>
+
+  <h1 class="text-3xl font-bold mb-6 text-gray-900">{{ courseTitle || "Course Learning Page" }}</h1>
+
+  <!-- Course Progress Bar -->
+  <div class="mb-6 bg-white rounded-lg shadow p-4">
+    <div class="flex justify-between items-center mb-2">
+      <h3 class="text-lg font-semibold text-gray-800">Course Progress</h3>
+      <span class="text-sm font-medium text-gray-600">{{ getCourseProgress() }}% Complete</span>
+    </div>
+    <div class="w-full bg-gray-200 rounded-full h-3">
+      <div 
+        class="bg-green-600 h-3 rounded-full transition-all duration-300" 
+        [style.width.%]="getCourseProgress()">
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="text-gray-500">Loading modules and lessons...</div>
+  <div *ngIf="error" class="text-red-600">{{ error }}</div>
+  <div *ngIf="!isLoading && modules.length === 0" class="text-gray-500">No modules found.</div>
+
+  <div *ngFor="let module of modules" class="mb-6">
+    <h2 class="text-xl font-semibold text-gray-800 mb-2">{{ module.title }}</h2>
+    <ul class="ml-4 space-y-4">
+      <li *ngFor="let lesson of module.lessons" class="bg-white shadow rounded-lg p-4 border">
+        <div class="flex justify-between items-center">
+          <div class="flex items-center space-x-3">
+            <h3 class="font-medium text-gray-900 text-base">{{ lesson.title }}</h3>
+            <span class="text-sm text-gray-400">{{ lesson.type }}</span>
+            <span *ngIf="isLessonCompleted(lesson.id)" class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+              ✓ Completed
+            </span>
+          </div>
+        </div>
+
+        <div class="mt-3 text-sm">
+          <ng-container *ngIf="selectedLessons[lesson.id]" [ngSwitch]="selectedLessons[lesson.id].type">
+            <div *ngSwitchCase="'VIDEO'">
+              <div class="mb-4">
+                <video 
+                  [src]="selectedLessons[lesson.id].contentUrl" 
+                  class="w-full h-64 rounded border"
+                  controls
+                  (ended)="markContentViewed(lesson.id, 'VIDEO')"
+                >
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              <div class="flex space-x-2">
+                <a 
+                  [href]="selectedLessons[lesson.id].contentUrl" 
+                  target="_blank" 
+                  class="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700"
+                >
+                  Open in New Tab
+                </a>
+                <a 
+                  [href]="selectedLessons[lesson.id].contentUrl" 
+                  download 
+                  class="bg-gray-600 text-white px-3 py-1 rounded text-sm hover:bg-gray-700"
+                >
+                  Download Video
+                </a>
+              </div>
+            </div>
+
+            <div *ngSwitchCase="'PDF'">
+              <div class="mb-4">
+                <iframe
+                  [src]="getPdfViewerUrl(selectedLessons[lesson.id].contentUrl)"
+                  class="w-full h-96 rounded border"
+                  frameborder="0"
+                  (load)="markContentViewed(lesson.id, 'PDF')"
+                  (error)="onPdfError(lesson.id)"
+                ></iframe>
+                <div *ngIf="pdfErrors[lesson.id]" class="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded text-sm text-yellow-800">
+                  PDF cannot be displayed inline. Please use the buttons below to view or download.
+                </div>
+              </div>
+              <div class="flex space-x-2">
+                <a 
+                  [href]="selectedLessons[lesson.id].contentUrl" 
+                  target="_blank" 
+                  class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
+                >
+                  Open in New Tab
+                </a>
+                <a 
+                  [href]="selectedLessons[lesson.id].contentUrl" 
+                  download 
+                  class="bg-gray-600 text-white px-3 py-1 rounded text-sm hover:bg-gray-700"
+                >
+                  Download PDF
+                </a>
+              </div>
+            </div>
+
+            <div *ngSwitchCase="'TEXT'" [innerHTML]="selectedLessons[lesson.id].contentUrl"></div>
+
+            <div *ngSwitchCase="'LINK'">
+              <a [href]="selectedLessons[lesson.id].contentUrl" target="_blank" class="text-indigo-600 underline">
+                Open Resource
+              </a>
+            </div>
+
+            <div *ngSwitchDefault class="text-gray-500">Unsupported lesson type</div>
+          </ng-container>
+
+          <!-- View/Complete Controls -->
+          <div class="mt-4 flex items-center space-x-4">
+            <button
+              (click)="markContentViewed(lesson.id, selectedLessons[lesson.id].type)"
+              class="text-xs text-green-600 underline"
+            >
+              Mark content as viewed
+            </button>
+
+            <button
+              *ngIf="selectedLessons[lesson.id] && isLessonCompletable(selectedLessons[lesson.id]) && !isLessonCompleted(lesson.id)"
+              (click)="markLessonAsComplete(lesson.id)"
+              class="bg-indigo-600 text-white px-4 py-1 rounded hover:bg-indigo-700 text-sm"
+            >
+              Mark as Complete
+            </button>
+
+            <button
+              *ngIf="isLessonCompleted(lesson.id)"
+              disabled
+              class="bg-green-600 text-white px-4 py-1 rounded text-sm opacity-75 cursor-not-allowed"
+            >
+              ✓ Completed
+            </button>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</main>

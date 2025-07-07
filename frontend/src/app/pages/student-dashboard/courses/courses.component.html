@@ -1,23 +1,31 @@
 <app-header></app-header>
 
 <div class="flex min-h-screen pt-16">
-
   <app-sidebar></app-sidebar>
-  
+
   <main class="flex-1">
     <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-
       <div class="bg-white shadow-sm border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex justify-between items-center py-6">
             <div>
               <h1 class="text-3xl font-bold text-gray-900">My Courses</h1>
-              <p class="text-gray-600 mt-1">Track your enrolled courses and learning progress</p>
+              <p class="text-gray-600 mt-1">
+                Track your enrolled courses and learning progress
+              </p>
             </div>
             <div class="flex items-center space-x-4">
-              <button routerLink="/courses" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+              <button
+                routerLink="/courses"
+                class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
+              >
                 <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                  ></path>
                 </svg>
                 Browse More Courses
               </button>
@@ -27,7 +35,6 @@
       </div>
 
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
         <div *ngIf="isLoading" class="flex justify-center items-center py-12">
           <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
           <span class="ml-3 text-gray-600">Loading your courses...</span>
@@ -46,105 +53,86 @@
         </div>
 
         <div *ngIf="!isLoading && !error">
-
           <div *ngIf="enrollments.length === 0" class="text-center py-12">
             <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+              ></path>
             </svg>
             <h3 class="mt-2 text-sm font-medium text-gray-900">No courses enrolled</h3>
             <p class="mt-1 text-sm text-gray-500">Get started by browsing our course catalog.</p>
             <div class="mt-6">
-              <button routerLink="/courses" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+              <button
+                routerLink="/courses"
+                class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+              >
                 Browse Courses
               </button>
             </div>
           </div>
 
           <div *ngIf="enrollments.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div *ngFor="let enrollment of enrollments" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
-              <div class="p-6">
-                <div class="flex items-center justify-between mb-4">
-                  <h3 class="text-lg font-semibold text-gray-900 truncate">{{ enrollment.course.title }}</h3>
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    Enrolled
-                  </span>
-                </div>
-                
-                <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ enrollment.course.description }}</p>
-                
-                <div class="mb-4">
-                  <div class="flex justify-between items-center mb-2">
-                    <span class="text-sm font-medium text-gray-700">Progress</span>
-                    <span class="text-sm font-semibold" [ngClass]="getProgressColor(enrollment.progress)">
-                      {{ enrollment.progress }}%
-                    </span>
-                  </div>
-                  <div class="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      class="h-2 rounded-full transition-all duration-300" 
-                      [ngClass]="getProgressBarColor(enrollment.progress)"
-                      [style.width.%]="enrollment.progress">
+            <ng-container *ngFor="let enrollment of enrollments">
+              <ng-container *ngIf="enrollment.course">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+                  <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                      <h3 class="text-lg font-semibold text-gray-900 truncate">
+                        {{ enrollment.course.title }}
+                      </h3>
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Enrolled</span>
+                    </div>
+
+                    <p class="text-sm text-gray-700 mb-4">
+                      {{ enrollment.course.description }}
+                    </p>
+
+                    <div class="mb-4">
+                      <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm font-medium text-gray-700">Progress</span>
+                        <span class="text-sm font-semibold" [ngClass]="getProgressColor(enrollment.progress)">
+                          {{ enrollment.progress }}%
+                        </span>
+                      </div>
+                      <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div
+                          class="h-2 rounded-full transition-all duration-300"
+                          [ngClass]="getProgressBarColor(enrollment.progress)"
+                          [style.width.%]="enrollment.progress || 0"
+                        ></div>
+                      </div>
+                      <p *ngIf="enrollment.progress === 0" class="text-xs text-gray-400 mt-1">Start learning to begin progress</p>
+                    </div>
+
+                    <div class="flex justify-between items-center text-sm text-gray-500 mb-4">
+                      <span>{{ enrollment.completedLessons }} of {{ enrollment.totalLessons }} lessons</span>
+                      <span>Instructor: {{ enrollment.course.instructor.name || 'N/A' }}</span>
+                    </div>
+
+                    <div class="flex space-x-2">
+                      <button
+                        class="flex-1 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium"
+                        (click)="onContinueLearning(enrollment.course.id)"
+                      >
+                        Continue Learning
+                      </button>
+                      <button
+                        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium"
+                        (click)="onViewProgress(enrollment.id)"
+                      >
+                        View Progress
+                      </button>
                     </div>
                   </div>
                 </div>
-
-                <div class="flex justify-between items-center text-sm text-gray-500 mb-4">
-                  <span>{{ enrollment.completedLessons }} of {{ enrollment.totalLessons }} lessons</span>
-                  <span>Instructor: {{ enrollment.course.instructor.name || 'N/A' }}</span>
-                </div>
-
-                <div class="flex space-x-2">
-                  <button 
-                    [routerLink]="['/courses', enrollment.course.id]"
-                    class="flex-1 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium">
-                    Continue Learning
-                  </button>
-                  <button 
-                    [routerLink]="['/student/progress', enrollment.id]"
-                    class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">
-                    View Progress
-                  </button>
-                </div>
-
-                <!-- Expandable Modules/Lessons UI -->
-                <div class="mt-4">
-                  <button (click)="toggleCourse(enrollment.course.id)" class="text-blue-600 hover:underline text-sm">
-                    {{ expandedCourses[enrollment.course.id] ? 'Hide Modules' : 'Show Modules & Lessons' }}
-                  </button>
-                  <div *ngIf="expandedCourses[enrollment.course.id]">
-                    <div *ngIf="!courseModules[enrollment.course.id]">Loading modules...</div>
-                    <div *ngIf="courseModules[enrollment.course.id] && courseModules[enrollment.course.id].length === 0" class="text-gray-500 text-xs mt-2">No modules found.</div>
-                    <ul *ngIf="courseModules[enrollment.course.id] && courseModules[enrollment.course.id].length > 0" class="ml-4 mt-2 space-y-2">
-                      <li *ngFor="let module of courseModules[enrollment.course.id]">
-                        <ng-container *ngIf="module">
-                          <div class="flex items-center">
-                            <button (click)="toggleModule(module.id, enrollment.course.id)" class="text-indigo-600 hover:underline text-xs mr-2">
-                              {{ expandedModules[module.id] ? '▼' : '►' }}
-                            </button>
-                            <span class="font-semibold text-gray-800 text-sm">{{ module.title }}</span>
-                          </div>
-                          <div *ngIf="expandedModules[module.id]">
-                            <div *ngIf="!moduleLessons[module.id]">Loading lessons...</div>
-                            <div *ngIf="moduleLessons[module.id] && moduleLessons[module.id].length === 0" class="text-gray-400 text-xs ml-4">No lessons found.</div>
-                            <ul *ngIf="moduleLessons[module.id] && moduleLessons[module.id].length > 0" class="ml-6 mt-1 space-y-1">
-                              <li *ngFor="let lesson of moduleLessons[module.id]" class="flex items-center space-x-2">
-                                <button (click)="onLessonClick(lesson)" class="text-blue-700 hover:underline text-xs">
-                                  {{ lesson.title }}
-                                </button>
-                                <span class="text-gray-400 text-xs">({{ lesson.type }})</span>
-                              </li>
-                            </ul>
-                          </div>
-                        </ng-container>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
+              </ng-container>
+            </ng-container>
           </div>
         </div>
       </div>
     </div>
   </main>
-</div> 
+</div>
