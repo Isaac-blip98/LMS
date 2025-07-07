@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { InstructorService } from '../Services/instructor.service';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../Services/auth.service';
+import { StudentService } from '../Services/student.service';
 
 @Component({
   selector: 'app-course-details',
@@ -40,7 +41,8 @@ export class CourseDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private courseService: CourseService,
     private instructorService: InstructorService,
-    private authService: AuthService
+    private authService: AuthService,
+    private studentService: StudentService
   ) {}
 
   ngOnInit(): void {
@@ -114,8 +116,19 @@ export class CourseDetailsComponent implements OnInit {
   }
 
   enroll() {
-    // Enrollment logic goes here
-    alert('Enrolled in course: ' + (this.course?.title || ''));
+    if (!this.course || !this.isLoggedIn || !this.currentUser) {
+      alert('You must be logged in to enroll.');
+      return;
+    }
+    this.studentService.enrollInCourse(this.course.id).subscribe({
+      next: () => {
+        alert('Successfully enrolled in course: ' + this.course!.title);
+        // Optionally, refresh enrollments or update UI here
+      },
+      error: (err) => {
+        alert('Failed to enroll: ' + (err?.error?.message || 'Unknown error'));
+      }
+    });
   }
 
   submitReview() {
