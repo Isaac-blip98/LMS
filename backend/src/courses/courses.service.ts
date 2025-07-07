@@ -89,7 +89,36 @@ export class CoursesService {
   }
 
   async findAll() {
-    return this.prisma.course.findMany();
+    const courses = await this.prisma.course.findMany({
+      include: {
+        instructor: { select: { name: true } },
+      },
+    });
+    const courseIds = courses.map(c => c.id);
+    // Get all reviews for these courses
+    const reviews = await this.prisma.review.findMany({
+      where: { courseId: { in: courseIds } },
+      select: { courseId: true, rating: true },
+    });
+
+    // Aggregate ratings and counts
+    const ratingMap: Record<string, { sum: number; count: number }> = {};
+    for (const review of reviews) {
+      if (!ratingMap[review.courseId]) {
+        ratingMap[review.courseId] = { sum: 0, count: 0 };
+      }
+      ratingMap[review.courseId].sum += review.rating;
+      ratingMap[review.courseId].count += 1;
+    }
+
+    return courses.map(course => ({
+      ...course,
+      instructorName: course.instructor?.name || 'Unknown Instructor',
+      averageRating: ratingMap[course.id]?.count
+        ? Math.round((ratingMap[course.id].sum / ratingMap[course.id].count) * 10) / 10
+        : 0,
+      reviewCount: ratingMap[course.id]?.count || 0,
+    }));
   }
 
   async findOne(id: string) {

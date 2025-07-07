@@ -105,6 +105,7 @@ model Module {
 
   lessons        Lesson[]
   moduleProgress UserModuleProgress[]
+  quizzes        Quiz[] 
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -188,6 +189,8 @@ model Quiz {
   title     String
   course    Course   @relation(fields: [courseId], references: [id])
   courseId  String
+  module    Module?  @relation(fields: [moduleId], references: [id])
+  moduleId  String?
   timeLimit Int?
   createdAt DateTime @default(now())
 

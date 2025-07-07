@@ -20,10 +20,16 @@ export class QuizzesService {
   async getQuizzesByCourse(courseId: string) {
     const quizzes = await this.prisma.quiz.findMany({
       where: { courseId },
-      include: { questions: true }
+      include: {
+        questions: {
+          include: { options: true }
+        },
+        module: { select: { id: true } }
+      }
     });
     return quizzes.map(quiz => ({
       ...quiz,
+      moduleId: quiz.moduleId,
       questionCount: quiz.questions.length
     }));
   }

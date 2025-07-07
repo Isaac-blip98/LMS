@@ -193,9 +193,18 @@ export class CourseResponseDto {
   @ApiProperty()
   instructorId: string;
 
+  @ApiProperty({ example: 'John Doe' })
+  instructorName: string;
+
   @ApiProperty()
   createdAt: Date;
 
   @ApiProperty()
   updatedAt: Date;
+
+  @ApiProperty({ example: 4.5 })
+  averageRating: number;
+
+  @ApiProperty({ example: 122 })
+  reviewCount: number;
 }

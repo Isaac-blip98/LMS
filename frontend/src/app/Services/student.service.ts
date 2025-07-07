@@ -178,4 +178,8 @@ export class StudentService {
   enrollInCourse(courseId: string) {
     return this.http.post(`${this.baseUrl}/enrollments/enroll`, { courseId });
   }
+
+  getCourseModules(courseId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/content/courses/${courseId}/modules`);
+  }
 } 

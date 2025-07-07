@@ -96,8 +96,16 @@ export class StudentCertificatesComponent implements OnInit {
   }
 
   shareCertificate(certificate: Certificate) {
-    // In a real implementation, this would open sharing options
-    console.log('Sharing certificate:', certificate.id);
-    // You could implement social media sharing or copy link functionality
+    const shareUrl = certificate.certificateUrl;
+    if (navigator.share) {
+      navigator.share({
+        title: 'My Certificate',
+        text: 'Check out my certificate!',
+        url: shareUrl,
+      });
+    } else {
+      navigator.clipboard.writeText(shareUrl);
+      alert('Certificate link copied to clipboard!');
+    }
   }
 } 

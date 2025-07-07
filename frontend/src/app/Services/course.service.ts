@@ -16,6 +16,9 @@ export interface Course {
   createdAt: string;
   updatedAt: string;
   imageUrl?: string;
+  averageRating: number;
+  reviewCount: number;
+  instructorName: string;
 }
 
 export interface Review {

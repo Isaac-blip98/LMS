@@ -19,6 +19,7 @@ export class StudentProgressComponent implements OnInit {
   isLoading = true;
   error: string | null = null;
   selectedPeriod = 'month';
+  dashboardStats: any = null;
 
   constructor(
     private studentService: StudentService,
@@ -43,6 +44,7 @@ export class StudentProgressComponent implements OnInit {
     const enrollments$ = this.studentService.getMyEnrollments();
     const progress$ = this.studentService.getStudentProgress(userId);
     const analytics$ = this.studentService.getStudentAnalytics(userId, this.selectedPeriod);
+    const dashboardStats$ = this.studentService.getDashboardStats(userId);
 
     enrollments$.subscribe({
       next: (enrollments: Enrollment[]) => {
@@ -76,6 +78,18 @@ export class StudentProgressComponent implements OnInit {
       error: (error: any) => {
         console.error('Error loading analytics:', error);
         this.analytics = null;
+        this.checkAndCompleteLoading();
+      }
+    });
+
+    dashboardStats$.subscribe({
+      next: (stats: any) => {
+        this.dashboardStats = stats;
+        this.checkAndCompleteLoading();
+      },
+      error: (error: any) => {
+        console.error('Error loading dashboard stats:', error);
+        this.dashboardStats = null;
         this.checkAndCompleteLoading();
       }
     });

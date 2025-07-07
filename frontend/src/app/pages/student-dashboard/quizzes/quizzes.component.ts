@@ -24,6 +24,8 @@ export class StudentQuizzesComponent implements OnInit {
   courseQuizzes: any[] = [];
   quizAnswers: { [quizId: string]: { [questionId: string]: string } } = {};
   submittingAttempt: boolean = false;
+  successMessage: string | null = null;
+  submitError: string | null = null;
 
   constructor(
     private studentService: StudentService,
@@ -126,13 +128,11 @@ export class StudentQuizzesComponent implements OnInit {
 
   onSelectCourse(courseId: string) {
     this.selectedCourseId = courseId;
-    this.loadQuizzesForCourse(courseId);
-  }
-
-  loadQuizzesForCourse(courseId: string) {
+    this.courseQuizzes = [];
+    if (!courseId) return;
     this.studentService.getQuizzesForCourse(courseId).subscribe({
       next: (quizzes) => {
-        this.courseQuizzes = quizzes;
+        this.courseQuizzes = quizzes; // quizzes already include questions
       },
       error: (err) => {
         this.courseQuizzes = [];
@@ -150,6 +150,8 @@ export class StudentQuizzesComponent implements OnInit {
     const currentUser = this.authService.getCurrentUser();
     if (!currentUser?.id) return;
     const answers = Object.entries(this.quizAnswers[quiz.id] || {}).map(([questionId, answer]) => ({ questionId, answer }));
+    this.successMessage = null;
+    this.submitError = null;
     this.submittingAttempt = true;
     this.studentService.createQuizAttempt({
       userId: currentUser.id,
@@ -158,12 +160,42 @@ export class StudentQuizzesComponent implements OnInit {
     }).subscribe({
       next: () => {
         this.submittingAttempt = false;
-        this.loadQuizAttempts(); // Refresh attempts
+        this.successMessage = 'Quiz attempt submitted successfully!';
+        this.loadQuizAttempts();
       },
       error: (err) => {
         this.submittingAttempt = false;
+        this.submitError = 'Failed to submit quiz attempt. Please try again.';
         console.error('Failed to submit quiz attempt', err);
       }
     });
+  }
+
+  submitAllQuizAttempts() {
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser?.id) return;
+    this.successMessage = null;
+    this.submitError = null;
+    this.submittingAttempt = true;
+    const quizAttempts = this.courseQuizzes.map(quiz => {
+      const answers = Object.entries(this.quizAnswers[quiz.id] || {}).map(([questionId, answer]) => ({ questionId, answer }));
+      return this.studentService.createQuizAttempt({
+        userId: currentUser.id,
+        quizId: quiz.id,
+        answers
+      });
+    });
+    // Submit all attempts in parallel
+    Promise.all(quizAttempts.map(obs => obs.toPromise()))
+      .then(() => {
+        this.submittingAttempt = false;
+        this.successMessage = 'All quiz attempts submitted successfully!';
+        this.loadQuizAttempts();
+      })
+      .catch(err => {
+        this.submittingAttempt = false;
+        this.submitError = 'Failed to submit all quiz attempts. Please try again.';
+        console.error('Failed to submit all quiz attempts', err);
+      });
   }
 } 
