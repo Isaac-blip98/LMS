@@ -166,4 +166,8 @@ export class StudentService {
       studyHours: Math.round((analytics?.totalTimeSpent || 0) / 60) 
     };
   }
+
+  enrollInCourse(courseId: string) {
+    return this.http.post(`${this.baseUrl}/enrollments/enroll`, { courseId });
+  }
 } 
