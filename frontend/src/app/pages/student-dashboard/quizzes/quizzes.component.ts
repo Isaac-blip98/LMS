@@ -22,7 +22,7 @@ export class StudentQuizzesComponent implements OnInit {
   enrolledCourses: any[] = [];
   selectedCourseId: string | null = null;
   courseQuizzes: any[] = [];
-  quizAnswers: { [quizId: string]: { [questionId: string]: string } } = {};
+  quizAnswers: { [quizId: string]: { [questionId: string]: string } | undefined } = {};
   submittingAttempt: boolean = false;
   successMessage: string | null = null;
   submitError: string | null = null;
@@ -133,6 +133,7 @@ export class StudentQuizzesComponent implements OnInit {
     this.studentService.getQuizzesForCourse(courseId).subscribe({
       next: (quizzes) => {
         this.courseQuizzes = quizzes; // quizzes already include questions
+        console.log('Loaded quizzes:', this.courseQuizzes); // Debug log
       },
       error: (err) => {
         this.courseQuizzes = [];

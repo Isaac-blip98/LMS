@@ -82,41 +82,48 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       <ng-container *ngFor="let course of topCourses">
         <div
-          class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+          class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden flex flex-col"
+          style="min-width: 280px; max-width: 340px; margin: auto;"
         >
-          <img
-            *ngIf="course.imageUrl; else noImage"
-            [src]="course.imageUrl"
-            alt="{{ course.title }}"
-            class="w-full h-48 object-cover"
-          />
-          <ng-template #noImage>
-            <div class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-400">
-              No Image
+          <div class="relative">
+            <img
+              *ngIf="course.imageUrl; else noImage"
+              [src]="course.imageUrl"
+              alt="{{ course.title }}"
+              class="w-full h-36 object-cover object-top"
+            />
+            <ng-template #noImage>
+              <div class="w-full h-36 bg-gray-200 flex items-center justify-center text-gray-400">
+                No Image
+              </div>
+            </ng-template>
+            <span *ngIf="course.level" class="absolute top-3 left-3 bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full shadow">FULL STACK</span>
+          </div>
+          <div class="p-4 flex-1 flex flex-col">
+            <div class="mb-2">
+              <h3 class="text-base font-bold text-gray-900 leading-tight mb-1" style="min-height: 40px;">
+                {{ course.title }}
+              </h3>
             </div>
-          </ng-template>
-
-          <div class="p-4">
-            <h3 class="text-lg font-semibold text-gray-900 mb-1">
-              {{ course.title }}
-            </h3>
-            <p class="text-sm text-gray-600 mb-2 line-clamp-3">
-              {{ course.description }}
-            </p>
-
-            <div class="flex flex-col text-xs text-gray-500 space-y-1 mt-3">
-              <span>Level: {{ course.level }}</span>
-              <span>Category: {{ course.category }}</span>
-              <span
-                class="inline-block w-fit px-2 py-0.5 rounded-full text-white"
-                [ngClass]="{
-                  'bg-green-600': course.isPublished,
-                  'bg-gray-400': !course.isPublished
-                }"
-              >
-                {{ course.isPublished ? "Published" : "Draft" }}
+            <div class="text-xs text-gray-500 mb-2">{{ course.instructorName }}</div>
+            <div class="flex items-center mb-3">
+              <span class="text-base font-semibold text-gray-900 mr-1">{{ course.averageRating }}</span>
+              <span class="text-red-500 text-sm">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
               </span>
+              <span class="text-xs text-gray-500 ml-1">({{ course.reviewCount }})</span>
             </div>
+            <div class="flex-1"></div>
+            <button
+              class="bg-blue-600 text-white w-full py-2 rounded-lg font-semibold text-base mt-2 hover:bg-blue-700 transition-colors"
+              [routerLink]="['/courses', course.id]"
+            >
+              Enroll
+            </button>
           </div>
         </div>
       </ng-container>
