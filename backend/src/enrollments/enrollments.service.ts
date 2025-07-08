@@ -16,22 +16,50 @@ export class EnrollmentsService {
     return this.prisma.enrollment.create({ data: { userId, courseId } });
   }
   async getEnrollmentsByUser(userId: string) {
-    return this.prisma.enrollment.findMany({
+    const enrollments = await this.prisma.enrollment.findMany({
       where: { userId },
       include: {
         course: {
-          select: {
-            id: true,
-            title: true
-          }
-        }
-      }
+          include: {
+            instructor: true,
+            modules: {
+              include: {
+                lessons: true,
+              },
+            },
+          },
+        },
+        progress: true,
+      },
+    });
+
+    return enrollments.map((enrollment) => {
+      const allLessons = enrollment.course.modules.flatMap(
+        (mod) => mod.lessons,
+      );
+      const totalLessons = allLessons.length;
+
+      const completedLessons = enrollment.progress.filter(
+        (p) => p.completed,
+      ).length;
+      const progress =
+        totalLessons > 0
+          ? Math.round((completedLessons / totalLessons) * 100)
+          : 0;
+
+      return {
+        ...enrollment,
+        totalLessons,
+        completedLessons,
+        progress,
+      };
     });
   }
+
   async getEnrollmentsByCourse(courseId: string) {
     return this.prisma.enrollment.findMany({
       where: { courseId },
-      include: { user: true }
+      include: { user: true },
     });
   }
   async getAllEnrollments() {
@@ -74,11 +102,13 @@ export class EnrollmentsService {
         }
       });
       // Filter certificates to only include those from courses the instructor teaches
-      const filteredCertificates = certificates.filter(certificate => 
-        certificate.course.instructorId === user.userId
+      const filteredCertificates = certificates.filter(
+        (certificate) => certificate.course.instructorId === user.userId,
       );
       if (filteredCertificates.length === 0 && certificates.length > 0) {
-        throw new ForbiddenException('You can only view certificates for students in your courses');
+        throw new ForbiddenException(
+          'You can only view certificates for students in your courses',
+        );
       }
       return filteredCertificates.map(cert => ({
         ...cert,
@@ -100,12 +130,15 @@ export class EnrollmentsService {
       instructorName: cert.course?.instructor?.name || ''
     }));
   }
-  
-  async issueCertificate(userId: string, courseId: string, certificateUrl: string) {
-    
+
+  async issueCertificate(
+    userId: string,
+    courseId: string,
+    certificateUrl: string,
+  ) {
     // Create the certificate first to get the ID
-    const certificate = await this.prisma.certificate.create({ 
-      data: { userId, courseId, certificateUrl } 
+    const certificate = await this.prisma.certificate.create({
+      data: { userId, courseId, certificateUrl },
     });
 
     // If the certificate URL is not already a Cloudinary URL, upload it to Cloudinary
@@ -115,7 +148,7 @@ export class EnrollmentsService {
           certificateUrl,
           certificate.id,
         );
-        
+
         // Update the certificate with the Cloudinary URL
         await this.prisma.certificate.update({
           where: { id: certificate.id },

@@ -40,4 +40,28 @@
       Certificates
     </a>
   </nav>
+  <!-- Complete Course Button and Status -->
+  <div class="mt-8 px-6">
+    <ng-container *ngIf="enrollments.length">
+      <div *ngIf="completeEligibility">
+        <button
+          class="w-full bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed"
+          [disabled]="!completeEligibility.eligible || completeEligibility.courseCompleted || completeLoading"
+          (click)="completeCourse()"
+        >
+          <span *ngIf="!completeEligibility.courseCompleted">Complete Course</span>
+          <span *ngIf="completeEligibility.courseCompleted">Course Completed</span>
+        </button>
+        <span *ngIf="completeLoading" class="block mt-2 text-gray-500">Completing...</span>
+        <span *ngIf="completeSuccess" class="block mt-2 text-green-600">{{ completeSuccess }}</span>
+        <span *ngIf="completeError" class="block mt-2 text-red-600">{{ completeError }}</span>
+        <div class="mt-2 text-xs text-gray-700">
+          <span *ngIf="!completeEligibility.allLessonsCompleted">- Complete all lessons to enable course completion.<br></span>
+          <span *ngIf="!completeEligibility.allQuizzesPassed">- Pass all quizzes to enable course completion.<br></span>
+          <span *ngIf="completeEligibility.courseCompleted">- You have already completed this course.</span>
+        </div>
+      </div>
+      <div *ngIf="!completeEligibility && !completeLoading" class="text-gray-500 text-xs">Checking course completion eligibility...</div>
+    </ng-container>
+  </div>
 </div>

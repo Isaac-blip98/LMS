@@ -315,12 +315,12 @@ async createQuestion(data: CreateQuestionDto, user: UserFromJwt) {
     const total = questions.length;
     const percentage = (correct / total) * 100;
     let resultFeedback = '';
-    if (percentage < 40) resultFeedback = 'fail';
-    else if (percentage === 40) resultFeedback = 'pass';
-    else if (percentage === 50) resultFeedback = 'need improvement';
-    else if (percentage === 60) resultFeedback = 'satisfactory';
-    else if (percentage > 70) resultFeedback = 'excellent';
-    const passed = percentage >= 40;
+    if (percentage < 50) resultFeedback = 'fail';
+    else if (percentage === 50) resultFeedback = 'pass';
+    else if (percentage > 50 && percentage < 70) resultFeedback = 'need improvement';
+    else if (percentage >= 70 && percentage < 90) resultFeedback = 'satisfactory';
+    else if (percentage >= 90) resultFeedback = 'excellent';
+    const passed = percentage >= 50;
     // Store attempt
     const attempt = await this.prisma.quizAttempt.create({
       data: {

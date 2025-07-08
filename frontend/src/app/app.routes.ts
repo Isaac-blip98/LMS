@@ -76,6 +76,13 @@ export const routes: Routes = [
     data: { roles: ['STUDENT'] }, 
   },
   {
+    path: 'student/progress/:enrollmentId',
+    loadComponent: () =>
+      import('./pages/student-dashboard/progress/progress.component').then(m => m.StudentProgressComponent),
+    canActivate: [AuthGuard],
+    data: { roles: ['STUDENT'] },
+  },
+  {
     path: 'student/quizzes',
     loadComponent: () =>
       import('./pages/student-dashboard/quizzes/quizzes.component').then(m => m.StudentQuizzesComponent),
@@ -93,6 +100,12 @@ export const routes: Routes = [
     path: 'student/lesson/:lessonId',
     loadComponent: () =>
       import('./pages/student-dashboard/lesson-view.component').then(m => m.StudentLessonViewComponent),
+    canActivate: [AuthGuard],
+    data: { roles: ['STUDENT'] },
+  },
+  {
+    path: 'student/courses/:courseId/learn',
+    loadComponent: () => import('./pages/student-dashboard/courses/course-learn/course-learn.component').then(m => m.CourseLearnComponent),
     canActivate: [AuthGuard],
     data: { roles: ['STUDENT'] },
   },

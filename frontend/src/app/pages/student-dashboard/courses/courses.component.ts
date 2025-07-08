@@ -17,12 +17,6 @@ export class StudentCoursesComponent implements OnInit {
   isLoading = true;
   error: string | null = null;
 
-  // Add state for expanded courses and modules
-  expandedCourses: { [courseId: string]: boolean } = {};
-  expandedModules: { [moduleId: string]: boolean } = {};
-  courseModules: { [courseId: string]: any[] } = {};
-  moduleLessons: { [moduleId: string]: any[] } = {};
-
   constructor(
     private studentService: StudentService,
     private authService: AuthService,
@@ -47,20 +41,6 @@ export class StudentCoursesComponent implements OnInit {
     });
   }
 
-  toggleCourse(courseId: string) {
-    this.expandedCourses[courseId] = !this.expandedCourses[courseId];
-    if (this.expandedCourses[courseId] && !this.courseModules[courseId]) {
-      // Placeholder for loading modules
-    }
-  }
-
-  toggleModule(moduleId: string, courseId: string) {
-    this.expandedModules[moduleId] = !this.expandedModules[moduleId];
-    if (this.expandedModules[moduleId] && !this.moduleLessons[moduleId]) {
-      // Placeholder for loading lessons
-    }
-  }
-
   getProgressColor(progress: number): string {
     if (progress >= 80) return 'text-green-600';
     if (progress >= 50) return 'text-yellow-600';
@@ -73,8 +53,11 @@ export class StudentCoursesComponent implements OnInit {
     return 'bg-red-600';
   }
 
-  // Placeholder for lesson click navigation
-  onLessonClick(lesson: any) {
-    this.router.navigate(['/student/lesson', lesson.id]);
+  onContinueLearning(courseId: string) {
+    this.router.navigate(['/student/courses', courseId, 'learn']);
   }
-} 
+
+  onViewProgress(enrollmentId: string) {
+    this.router.navigate(['/student/progress', enrollmentId]);
+  }
+}

@@ -118,7 +118,7 @@ export class StudentQuizzesComponent implements OnInit {
   loadEnrolledCourses() {
     this.studentService.getMyEnrollments().subscribe({
       next: (enrollments) => {
-        this.enrolledCourses = enrollments.map(e => ({ id: e.courseId, title: e.course.title }));
+        this.enrolledCourses = enrollments.map(e => ({ id: e.courseId, title: e.course?.title || 'Untitled Course' }));
       },
       error: (err) => {
         console.error('Failed to load courses', err);

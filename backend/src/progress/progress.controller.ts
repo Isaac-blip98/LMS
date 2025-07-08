@@ -58,6 +58,15 @@ export class ProgressController {
     return this.progressService.getUserCourseProgress(enrollmentId, user.userId);
   }
 
+  @Get('enrollment/:enrollmentId/completed-lessons')
+  @Roles(Role.STUDENT, Role.INSTRUCTOR, Role.ADMIN)
+  @ApiParam({ name: 'enrollmentId', type: String })
+  @ApiOperation({ summary: 'Get completed lesson IDs for an enrollment (Student/Instructor/Admin)' })
+  @ApiResponse({ status: 200, description: 'Array of completed lesson IDs' })
+  getCompletedLessonIds(@Param('enrollmentId') enrollmentId: string, @CurrentUser() user: UserFromJwt) {
+    return this.progressService.getCompletedLessonIds(enrollmentId, user.userId);
+  }
+
   @Get('user/:userId/all-courses')
   @Roles(Role.STUDENT, Role.INSTRUCTOR, Role.ADMIN)
   @ApiParam({ name: 'userId', type: String })
@@ -241,5 +250,23 @@ export class ProgressController {
     @CurrentUser() user: UserFromJwt
   ) {
     return this.progressService.getModuleProgress(moduleId, enrollmentId, user.userId);
+  }
+
+  @Get('enrollment/:enrollmentId/complete-eligibility')
+  @Roles(Role.STUDENT)
+  @ApiParam({ name: 'enrollmentId', type: String })
+  @ApiOperation({ summary: 'Check if student is eligible to complete the course' })
+  @ApiResponse({ status: 200, description: 'Eligibility status for course completion' })
+  async getCompleteEligibility(@Param('enrollmentId') enrollmentId: string, @CurrentUser() user: UserFromJwt) {
+    return this.progressService.getCourseCompleteEligibility(enrollmentId, user.userId);
+  }
+
+  @Post('enrollment/:enrollmentId/complete')
+  @Roles(Role.STUDENT)
+  @ApiParam({ name: 'enrollmentId', type: String })
+  @ApiOperation({ summary: 'Mark course as completed if eligible (Student only)' })
+  @ApiResponse({ status: 200, description: 'Course marked as completed' })
+  async completeCourse(@Param('enrollmentId') enrollmentId: string, @CurrentUser() user: UserFromJwt) {
+    return this.progressService.completeCourse(enrollmentId, user.userId);
   }
 }

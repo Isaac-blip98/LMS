@@ -161,6 +161,30 @@ export class ProgressService {
     };
   }
 
+  async getCompletedLessonIds(enrollmentId: string, userId?: string): Promise<string[]> {
+    // Validate enrollment ownership if userId is provided
+    if (userId) {
+      await this.validateEnrollmentOwnership(enrollmentId, userId);
+    } else {
+      const enrollment = await this.prisma.enrollment.findUnique({
+        where: { id: enrollmentId },
+      });
+      if (!enrollment) throw new NotFoundException('Enrollment not found');
+    }
+
+    const completedProgress = await this.prisma.progress.findMany({
+      where: {
+        enrollmentId,
+        completed: true,
+      },
+      select: {
+        lessonId: true,
+      },
+    });
+
+    return completedProgress.map(p => p.lessonId);
+  }
+
   async getUserAllCoursesProgress(userId: string) {
     const enrollments = await this.prisma.enrollment.findMany({
       where: { userId },
@@ -508,5 +532,82 @@ export class ProgressService {
       averageQuizScore,
       activityTrend
     };
+  }
+
+  // Returns eligibility for course completion
+  async getCourseCompleteEligibility(enrollmentId: string, userId: string) {
+    // Validate enrollment ownership
+    const enrollment = await this.prisma.enrollment.findUnique({
+      where: { id: enrollmentId },
+      include: {
+        course: {
+          include: {
+            modules: { include: { lessons: true } },
+          },
+        },
+        progress: true,
+      },
+    });
+    if (!enrollment) throw new NotFoundException('Enrollment not found');
+    if (enrollment.userId !== userId) throw new ForbiddenException('You can only check your own enrollment');
+
+    // Check all lessons completed
+    const allLessons = enrollment.course.modules.flatMap((mod) => mod.lessons);
+    const totalLessons = allLessons.length;
+    const completedLessons = enrollment.progress.filter((p) => p.completed).length;
+    const allLessonsCompleted = totalLessons > 0 && completedLessons === totalLessons;
+
+    // Check average quiz score (average >= 50)
+    const quizzes = await this.prisma.quiz.findMany({ where: { courseId: enrollment.courseId } });
+    let averageQuizScore = 0;
+    let allQuizzesAttempted = true;
+    if (quizzes.length > 0) {
+      let totalScore = 0;
+      for (const quiz of quizzes) {
+        const attempt = await this.prisma.quizAttempt.findFirst({
+          where: { userId, quizId: quiz.id },
+          orderBy: { score: 'desc' },
+        });
+        if (!attempt) {
+          allQuizzesAttempted = false;
+          break;
+        }
+        totalScore += attempt.score ?? 0;
+      }
+      if (allQuizzesAttempted) {
+        averageQuizScore = totalScore / quizzes.length;
+      }
+    }
+    const allQuizzesPassed = allQuizzesAttempted && averageQuizScore >= 60;
+
+    // Check if course already completed
+    const userCourseProgress = await this.prisma.userCourseProgress.findUnique({
+      where: { userId_courseId: { userId, courseId: enrollment.courseId } },
+    });
+    const courseCompleted = !!userCourseProgress?.complete;
+
+    return {
+      allLessonsCompleted,
+      allQuizzesPassed,
+      courseCompleted,
+      eligible: allLessonsCompleted && allQuizzesPassed && !courseCompleted,
+    };
+  }
+
+  // Marks the course as completed if eligible
+  async completeCourse(enrollmentId: string, userId: string) {
+    const eligibility = await this.getCourseCompleteEligibility(enrollmentId, userId);
+    if (!eligibility.eligible) {
+      throw new ForbiddenException('Not eligible to complete course');
+    }
+    // Mark as completed
+    const enrollment = await this.prisma.enrollment.findUnique({ where: { id: enrollmentId } });
+    if (!enrollment) throw new NotFoundException('Enrollment not found');
+    await this.prisma.userCourseProgress.upsert({
+      where: { userId_courseId: { userId, courseId: enrollment.courseId } },
+      update: { complete: true },
+      create: { userId, courseId: enrollment.courseId, complete: true },
+    });
+    return { success: true, message: 'Course marked as completed.' };
   }
 }

@@ -34,7 +34,10 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   // Enable CORS
-  app.enableCors();
+  app.enableCors({
+    origin: 'http://localhost:4200',
+    credentials: true,
+  });
 
   // Global validation pipe
   app.useGlobalPipes(

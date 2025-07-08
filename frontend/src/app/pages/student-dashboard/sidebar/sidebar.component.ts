@@ -16,6 +16,11 @@ export class Sidebar implements OnInit {
   loading = false;
   currentCourseId?: string;
   enrollments: Enrollment[] = [];
+  // --- New state for backend-driven eligibility ---
+  completeEligibility: any = null;
+  completeLoading = false;
+  completeError: string | null = null;
+  completeSuccess: string | null = null;
 
   constructor(private studentService: StudentService, private authService: AuthService) {}
 
@@ -27,7 +32,7 @@ export class Sidebar implements OnInit {
     this.loading = true;
     const user = this.authService.getCurrentUser();
     if (!user?.id) {
-      this.canCompleteCourse = false;
+      this.completeEligibility = null;
       this.loading = false;
       return;
     }
@@ -35,45 +40,43 @@ export class Sidebar implements OnInit {
       this.enrollments = enrollments;
       if (enrollments.length > 0) {
         this.currentCourseId = enrollments[0].courseId;
-        this.checkCompletionEligibility();
+        this.fetchCompleteEligibility(enrollments[0].id);
       } else {
-        this.canCompleteCourse = false;
+        this.completeEligibility = null;
         this.loading = false;
       }
-    }, _ => { this.canCompleteCourse = false; this.loading = false; });
+    }, _ => { this.completeEligibility = null; this.loading = false; });
   }
 
-  checkCompletionEligibility() {
-    const user = this.authService.getCurrentUser();
-    if (!user?.id || !this.currentCourseId) {
-      this.canCompleteCourse = false;
-      this.loading = false;
-      return;
-    }
-    // Get all quizzes for the course
-    this.studentService.getQuizzesForCourse(this.currentCourseId).subscribe(quizzes => {
-      // Get all quiz attempts for the user
-      this.studentService.getMyQuizAttempts(user.id).subscribe(attempts => {
-        // Check if all quizzes are passed and CAT attempted
-        let allPassed = true;
-        let catAttempted = false;
-        for (const quiz of quizzes) {
-          const attempt = attempts.find(a => a.quizId === quiz.id);
-          if (quiz.title.toLowerCase().includes('cat')) {
-            catAttempted = !!attempt;
-          }
-          if (!attempt || (attempt.score / attempt.totalQuestions) * 100 < 50) {
-            allPassed = false;
-          }
-        }
-        this.canCompleteCourse = allPassed && catAttempted;
-        this.loading = false;
-      }, _ => { this.canCompleteCourse = false; this.loading = false; });
-    }, _ => { this.canCompleteCourse = false; this.loading = false; });
+  fetchCompleteEligibility(enrollmentId: string) {
+    this.completeLoading = true;
+    this.studentService.getCourseCompleteEligibility(enrollmentId).subscribe({
+      next: (eligibility) => {
+        this.completeEligibility = eligibility;
+        this.completeLoading = false;
+      },
+      error: (err) => {
+        this.completeEligibility = null;
+        this.completeLoading = false;
+      }
+    });
   }
 
   completeCourse() {
-    // TODO: Implement API call to mark course as complete
-    alert('Course marked as complete! (Implement API call)');
+    if (!this.enrollments.length) return;
+    this.completeLoading = true;
+    this.completeError = null;
+    this.completeSuccess = null;
+    this.studentService.completeCourse(this.enrollments[0].id).subscribe({
+      next: (res) => {
+        this.completeLoading = false;
+        this.completeSuccess = 'Course marked as completed!';
+        this.fetchCompleteEligibility(this.enrollments[0].id);
+      },
+      error: (err) => {
+        this.completeLoading = false;
+        this.completeError = err?.error?.message || 'Failed to complete course.';
+      }
+    });
   }
 }

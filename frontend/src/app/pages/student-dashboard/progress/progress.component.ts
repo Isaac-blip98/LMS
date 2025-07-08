@@ -5,6 +5,7 @@ import { Sidebar } from '../sidebar/sidebar.component';
 import { HeaderComponent } from '../../../core/layout/header/header.component';
 import { StudentService, StudentProgress, StudentAnalytics, Enrollment } from '../../../Services/student.service';
 import { AuthService } from '../../../Services/auth.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-student-progress',
@@ -23,14 +24,16 @@ export class StudentProgressComponent implements OnInit {
 
   constructor(
     private studentService: StudentService,
-    private authService: AuthService
+    private authService: AuthService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
-    this.loadProgressData();
+    const enrollmentId = this.route.snapshot.paramMap.get('enrollmentId') || undefined;
+    this.loadProgressData(enrollmentId);
   }
 
-  private loadProgressData() {
+  private loadProgressData(enrollmentId?: string) {
     const currentUser = this.authService.getCurrentUser();
     if (!currentUser?.id) {
       this.error = 'User not authenticated';
@@ -60,7 +63,11 @@ export class StudentProgressComponent implements OnInit {
 
     progress$.subscribe({
       next: (progress: StudentProgress[]) => {
-        this.progressData = progress;
+        if (enrollmentId) {
+          this.progressData = progress.filter(p => p.courseId === enrollmentId);
+        } else {
+          this.progressData = progress;
+        }
         this.checkAndCompleteLoading();
       },
       error: (error: any) => {
