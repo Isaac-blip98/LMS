@@ -10,6 +10,8 @@ import {
   AuthResponseDto,
   CheckEmailDto,
   EmailAvailabilityResponseDto,
+  ForgotPasswordDto,
+  ResetPasswordDto,
 } from './dto/auth.dto';
 import { UserFromJwt } from './interfaces/auth.interface';
 
@@ -57,6 +59,20 @@ export class AuthController {
   })
   async checkEmailAvailability(@Body() checkEmailDto: CheckEmailDto) {
     return this.authService.checkEmailAvailability(checkEmailDto.email);
+  }
+
+  @Post('forgot-password')
+  @ApiOperation({ summary: 'Send a password reset code to user email' })
+  @ApiResponse({ status: 200, description: 'Reset code sent if email exists' })
+  async forgotPassword(@Body() dto: ForgotPasswordDto) {
+    return this.authService.forgotPassword(dto.email);
+  }
+
+  @Post('reset-password')
+  @ApiOperation({ summary: 'Reset password using code sent to email' })
+  @ApiResponse({ status: 200, description: 'Password reset successful' })
+  async resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto.email, dto.code, dto.newPassword);
   }
 
   @UseGuards(JwtAuthGuard)

@@ -120,7 +120,7 @@
             <div class="flex-1"></div>
             <button
               class="bg-blue-600 text-white w-full py-2 rounded-lg font-semibold text-base mt-2 hover:bg-blue-700 transition-colors"
-              [routerLink]="['/courses', course.id]"
+              (click)="enroll(course)"
             >
               Enroll
             </button>

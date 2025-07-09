@@ -7,6 +7,7 @@ import { InstructorService } from '../Services/instructor.service';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../Services/auth.service';
 import { StudentService } from '../Services/student.service';
+import { ModalService } from '../shared/modal/modal.service';
 
 @Component({
   selector: 'app-course-details',
@@ -34,6 +35,7 @@ export class CourseDetailsComponent implements OnInit {
 
   isLoggedIn = false;
   currentUser: { id: string; name: string; email: string; role: string } | null = null;
+  isEnrolled = false;
 
   averageRating: number = 0;
 
@@ -42,7 +44,8 @@ export class CourseDetailsComponent implements OnInit {
     private courseService: CourseService,
     private instructorService: InstructorService,
     private authService: AuthService,
-    private studentService: StudentService
+    private studentService: StudentService,
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
@@ -56,6 +59,7 @@ export class CourseDetailsComponent implements OnInit {
           this.loading = false;
           this.fetchReviews(id);
           this.fetchModuleAndLessonCounts(id);
+          this.checkEnrollment(id);
         },
         error: (err: any) => {
           this.errorMessage = 'Failed to load course details';
@@ -66,6 +70,21 @@ export class CourseDetailsComponent implements OnInit {
       this.errorMessage = 'Invalid course ID';
       this.loading = false;
     }
+  }
+
+  checkEnrollment(courseId: string) {
+    if (!this.isLoggedIn || !this.currentUser) {
+      this.isEnrolled = false;
+      return;
+    }
+    this.studentService.getEnrollmentByCourse(courseId).subscribe({
+      next: (enrollment) => {
+        this.isEnrolled = !!enrollment;
+      },
+      error: () => {
+        this.isEnrolled = false;
+      }
+    });
   }
 
   fetchModuleAndLessonCounts(courseId: string) {
@@ -117,13 +136,13 @@ export class CourseDetailsComponent implements OnInit {
 
   enroll() {
     if (!this.course || !this.isLoggedIn || !this.currentUser) {
-      alert('You must be logged in to enroll.');
+      this.modalService.openLogin();
       return;
     }
     this.studentService.enrollInCourse(this.course.id).subscribe({
       next: () => {
         alert('Successfully enrolled in course: ' + this.course!.title);
-        // Optionally, refresh enrollments or update UI here
+        this.checkEnrollment(this.course!.id);
       },
       error: (err) => {
         alert('Failed to enroll: ' + (err?.error?.message || 'Unknown error'));
@@ -141,7 +160,6 @@ export class CourseDetailsComponent implements OnInit {
     this.courseService.postReview({
       rating: this.reviewRating,
       comment: this.reviewComment,
-      userId: this.currentUser.id,
       courseId: this.course.id
     }).subscribe({
       next: () => {
@@ -153,7 +171,11 @@ export class CourseDetailsComponent implements OnInit {
       },
       error: (err) => {
         this.reviewSubmitting = false;
-        this.reviewSubmitError = 'Failed to submit review.';
+        if (err.status === 403 && err.error && err.error.message && err.error.message.includes('enroll')) {
+          this.reviewSubmitError = 'Please enroll in the course to leave a review.';
+        } else {
+          this.reviewSubmitError = 'Failed to submit review.';
+        }
       }
     });
   }
