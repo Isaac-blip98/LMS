@@ -4,7 +4,7 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { MarkCompleteDto } from './dto/mark-complete.dto';
-import { BulkMarkCompleteDto } from './dto/bulk-mark-complete.dto';
+// import { BulkMarkCompleteDto } from './dto/bulk-mark-complete.dto';
 import { UserProgressDto } from './dto/user-progress.dto';
 import { UserFromJwt } from '../auth/interfaces/auth.interface';
 
