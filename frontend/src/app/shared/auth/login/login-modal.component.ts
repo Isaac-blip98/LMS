@@ -38,6 +38,10 @@ export class LoginModalComponent {
     this.modalService.openRegister();
   }
 
+  openForgotPassword() {
+    this.modalService.openForgotPassword();
+  }
+
   login() {
     if (this.loginForm.invalid) return;
 

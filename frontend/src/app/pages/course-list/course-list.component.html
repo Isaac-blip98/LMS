@@ -45,8 +45,9 @@
   >
     <div
       *ngFor="let course of filteredCourses"
-      class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden flex flex-col"
+      class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden flex flex-col cursor-pointer"
       style="min-width: 280px; max-width: 340px; margin: auto;"
+      (click)="goToCourseDetails(course.id)"
     >
       <div class="relative">
         <img
@@ -77,9 +78,10 @@
         <div class="flex-1"></div>
         <button
           class="bg-blue-600 text-white w-full py-2 rounded-lg font-semibold text-base mt-2 hover:bg-blue-700 transition-colors"
-          [routerLink]="['/courses', course.id]"
+          (click)="enroll(course); $event.stopPropagation();"
+          [disabled]="isCourseEnrolled(course.id)"
         >
-          Enroll
+          {{ isCourseEnrolled(course.id) ? 'Enrolled' : 'Enroll' }}
         </button>
       </div>
     </div>

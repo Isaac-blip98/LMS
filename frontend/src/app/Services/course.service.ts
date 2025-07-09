@@ -48,7 +48,7 @@ export class CourseService {
     return this.http.get<Review[]>(`http://localhost:3000/reviews/course/${courseId}`);
   }
 
-  postReview(review: { rating: number; comment?: string; userId: string; courseId: string }): Observable<Review> {
+  postReview(review: { rating: number; comment?: string; courseId: string }): Observable<Review> {
     return this.http.post<Review>('http://localhost:3000/reviews', review);
   }
 }

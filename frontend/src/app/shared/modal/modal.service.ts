@@ -4,6 +4,7 @@ export enum ModalType {
   None,
   Login,
   Register,
+  ForgotPassword,
 }
 
 @Injectable({
@@ -34,5 +35,12 @@ export class ModalService {
 
   isAnyModalOpen(): boolean {
     return this.activeModal !== ModalType.None;
+  }
+
+  openForgotPassword() {
+    this.activeModal = ModalType.ForgotPassword;
+  }
+  isForgotPasswordOpen(): boolean {
+    return this.activeModal === ModalType.ForgotPassword;
   }
 }
