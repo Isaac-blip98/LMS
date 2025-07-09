@@ -13,10 +13,6 @@ export class CreateReviewDto {
   @IsString()
   comment?: string;
 
-  @ApiProperty({ example: 'uuid-of-user' })
-  @IsString()
-  userId: string;
-
   @ApiProperty({ example: 'uuid-of-course' })
   @IsString()
   courseId: string;

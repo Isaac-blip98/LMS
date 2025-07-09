@@ -5,6 +5,7 @@ import { CourseService, Course } from '../../Services/course.service';
 import { ModalService } from '../../shared/modal/modal.service';
 import { RegisterModalComponent } from '../../shared/auth/register/register-modal.component';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../Services/auth.service';
 
 @Component({
   selector: 'app-landing',
@@ -19,7 +20,8 @@ export class LandingComponent implements OnInit {
   constructor(
     private courseService: CourseService,
     private modalService: ModalService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -41,5 +43,14 @@ export class LandingComponent implements OnInit {
     if (this.searchTerm.trim()) {
       this.router.navigate(['/courses'], { queryParams: { search: this.searchTerm } });
     }
+  }
+
+  enroll(course: Course) {
+    if (!this.authService.isAuthenticated()) {
+      this.modalService.openLogin();
+      return;
+    }
+    // Implement enrollment logic here
+    alert('Enroll logic not implemented yet for course: ' + course.title);
   }
 }

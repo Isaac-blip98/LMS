@@ -8,9 +8,13 @@ import { JwtPayload, UserFromJwt } from './interfaces/auth.interface';
 import { Role } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { MailerService } from 'src/mailer/mailer.service';
+import { randomBytes } from 'crypto';
 
 @Injectable()
 export class AuthService {
+  // In-memory store for reset codes (for demo; use DB in production)
+  private resetCodes: { [email: string]: { code: string; expires: number } } = {};
+
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
@@ -78,6 +82,33 @@ async register(registerDto: RegisterDto) {
         ? 'Email is already registered'
         : 'Email is available',
     };
+  }
+
+  async forgotPassword(email: string) {
+    const user = await this.usersService.findByEmail(email);
+    if (!user) {
+      // For security, do not reveal if email exists
+      return { message: 'If the email exists, a reset code has been sent.' };
+    }
+    const code = randomBytes(3).toString('hex').toUpperCase(); // 6-char code
+    const expires = Date.now() + 1000 * 60 * 10; // 10 minutes
+    this.resetCodes[email] = { code, expires };
+    await this.mailerService.sendResetPasswordEmail(email, code);
+    return { message: 'If the email exists, a reset code has been sent.' };
+  }
+
+  async resetPassword(email: string, code: string, newPassword: string) {
+    const entry = this.resetCodes[email];
+    if (!entry || entry.code !== code || entry.expires < Date.now()) {
+      throw new UnauthorizedException('Invalid or expired reset code');
+    }
+    const user = await this.usersService.findByEmail(email);
+    if (!user) {
+      throw new UnauthorizedException('Invalid email');
+    }
+    await this.usersService.update(user.id, { password: newPassword });
+    delete this.resetCodes[email];
+    return { message: 'Password reset successful' };
   }
 
   async updateProfile(user: UserFromJwt, update: { name?: string; email?: string }) {

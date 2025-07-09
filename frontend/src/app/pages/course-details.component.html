@@ -24,7 +24,13 @@
           <p>Level: {{ course.level }}</p>
           <p>Category: {{ course.category }}</p>
         </div>
-        <button class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors" (click)="enroll()">Enroll</button>
+        <button 
+          class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors" 
+          (click)="enroll()" 
+          [disabled]="isEnrolled"
+        >
+          {{ isEnrolled ? 'Enrolled' : 'Enroll' }}
+        </button>
       </div>
     </div>
 

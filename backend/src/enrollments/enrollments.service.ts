@@ -3,17 +3,26 @@ import { Injectable, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { UserFromJwt } from '../auth/interfaces/auth.interface';
+import { MailerService } from '../mailer/mailer.service';
 
 @Injectable()
 export class EnrollmentsService {
   constructor(
     private prisma: PrismaService,
     private cloudinaryService: CloudinaryService,
+    private mailerService: MailerService,
   ) {}
 
   // Enrollments
   async enrollUser(userId: string, courseId: string) {
-    return this.prisma.enrollment.create({ data: { userId, courseId } });
+    const enrollment = await this.prisma.enrollment.create({ data: { userId, courseId } });
+    // Fetch user and course info for email
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    const course = await this.prisma.course.findUnique({ where: { id: courseId } });
+    if (user && course) {
+      await this.mailerService.sendEnrollmentConfirmationEmail(user.email, user.name, course.title);
+    }
+    return enrollment;
   }
   async getEnrollmentsByUser(userId: string) {
     const enrollments = await this.prisma.enrollment.findMany({

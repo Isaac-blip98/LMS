@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateReviewDto, UpdateReviewDto } from './dto/review.dto';
 
@@ -6,8 +6,24 @@ import { CreateReviewDto, UpdateReviewDto } from './dto/review.dto';
 export class ReviewsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createReviewDto: CreateReviewDto) {
-    return this.prisma.review.create({ data: createReviewDto });
+  async create(createReviewDto: CreateReviewDto, user: any) {
+    // Check if the user is enrolled in the course
+    const enrollment = await this.prisma.enrollment.findFirst({
+      where: {
+        userId: user.userId,
+        courseId: createReviewDto.courseId,
+      },
+    });
+    if (!enrollment) {
+      throw new ForbiddenException('You must be enrolled in this course to leave a review.');
+    }
+    // Create the review with the userId from the JWT
+    return this.prisma.review.create({
+      data: {
+        ...createReviewDto,
+        userId: user.userId,
+      },
+    });
   }
 
   async findAll() {
