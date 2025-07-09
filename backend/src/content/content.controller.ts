@@ -22,7 +22,6 @@ import { UserFromJwt } from '../auth/interfaces/auth.interface';
 @ApiTags('Content')
 @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
 @Controller('content')
-@UseGuards(JwtAuthGuard, RolesGuard)
 export class ContentController {
   constructor(
     private readonly contentService: ContentService,

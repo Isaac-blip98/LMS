@@ -58,6 +58,26 @@ export class MailerService {
     }
   }
 
+  async sendResetPasswordEmail(to: string, code: string): Promise<void> {
+    // For compatibility, just call sendVerificationCodeEmail with a generic name
+    await this.sendVerificationCodeEmail(to, code, 'User');
+  }
+
+  async sendEnrollmentConfirmationEmail(to: string, name: string, courseTitle: string): Promise<void> {
+    try {
+      await this.mailerService.sendMail({
+        to,
+        subject: `Enrollment Confirmation for ${courseTitle}`,
+        template: 'enrollment-confirmation',
+        context: { name, courseTitle },
+      });
+      this.logger.log(`Enrollment confirmation email sent to ${to}`);
+    } catch (error) {
+      this.logger.error(`Failed to send enrollment confirmation email to ${to}:`, error);
+      throw new Error(`Failed to send enrollment confirmation email: ${error.message}`);
+    }
+  }
+
   async testEmailConnection(): Promise<boolean> {
     try {
       await this.mailerService.sendMail({

@@ -21,14 +21,15 @@ import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from '@prisma/client';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 
 @ApiTags('Reviews')
 @Controller('reviews')
-@UseGuards(JwtAuthGuard, RolesGuard)
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Create a new review' })
   @Roles(Role.STUDENT)
   @ApiResponse({
@@ -36,8 +37,8 @@ export class ReviewsController {
     description: 'Review created successfully',
     type: ReviewResponseDto,
   })
-  create(@Body() createReviewDto: CreateReviewDto) {
-    return this.reviewsService.create(createReviewDto);
+  create(@Body() createReviewDto: CreateReviewDto, @CurrentUser() user: any) {
+    return this.reviewsService.create(createReviewDto, user);
   }
 
   @Get()
