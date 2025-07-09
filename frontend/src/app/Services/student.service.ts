@@ -134,14 +134,34 @@ export class StudentService {
     return this.http.get<StudentAnalytics>(`${this.baseUrl}/progress/user/${userId}/analytics`);
   }
 
-  calculateDashboardStats(enrollments: Enrollment[], analytics: StudentAnalytics): StudentDashboardStats {
+  calculateDashboardStats(enrollments: Enrollment[], analytics: StudentAnalytics, quizAttempts?: QuizAttempt[]): StudentDashboardStats {
     const totalCourses = enrollments.length;
     const completedCourses = enrollments.filter(e => e.progress >= 100).length;
-    const totalProgress = totalCourses > 0 
-      ? Math.round(enrollments.reduce((sum, e) => sum + e.progress, 0) / totalCourses)
-      : 0;
+    // Check if all lessons are completed
+    const allLessons = enrollments.reduce((sum, e) => sum + e.totalLessons, 0);
+    const allCompleted = enrollments.reduce((sum, e) => sum + e.completedLessons, 0);
+    let totalProgress = 0;
+    if (allLessons > 0 && allCompleted === allLessons) {
+      totalProgress = 100;
+    } else if (quizAttempts && quizAttempts.length > 0) {
+      // Use highest score per quiz
+      const highestScores: { [quizId: string]: number } = {};
+      quizAttempts.forEach(attempt => {
+        if (!highestScores[attempt.quizId] || attempt.score > highestScores[attempt.quizId]) {
+          highestScores[attempt.quizId] = attempt.score;
+        }
+      });
+      const scores = Object.values(highestScores);
+      totalProgress = scores.length > 0
+        ? Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length)
+        : 0;
+    } else {
+      // Fallback to lesson progress
+      totalProgress = totalCourses > 0 
+        ? Math.round(enrollments.reduce((sum, e) => sum + e.progress, 0) / totalCourses)
+        : 0;
+    }
     const averageGrade = analytics?.averageQuizScore || 0;
-
     return {
       enrolledCourses: totalCourses,
       completedCourses,

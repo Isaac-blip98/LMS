@@ -23,6 +23,7 @@ export class Dashboard implements OnInit {
   analytics: StudentAnalytics | null = null;
   isLoading = true;
   error: string | null = null;
+  quizAttempts: any[] = [];
 
   constructor(
     private studentService: StudentService,
@@ -43,15 +44,35 @@ export class Dashboard implements OnInit {
 
     const userId = currentUser.id;
 
-    this.studentService.getDashboardStats(userId).subscribe({
-      next: (stats: StudentDashboardStats) => {
-        this.dashboardStats = stats;
-        this.loadEnrollmentsAndAnalytics(userId);
+    // Fetch quiz attempts
+    this.studentService.getMyQuizAttempts(userId).subscribe({
+      next: (attempts: any[]) => {
+        this.quizAttempts = attempts;
+        // After quiz attempts, load stats
+        this.studentService.getDashboardStats(userId).subscribe({
+          next: (stats: StudentDashboardStats) => {
+            this.dashboardStats = stats;
+            this.loadEnrollmentsAndAnalytics(userId);
+          },
+          error: (error: any) => {
+            console.error('Error loading dashboard stats:', error);
+            this.loadEnrollmentsAndAnalytics(userId);
+          }
+        });
       },
       error: (error: any) => {
-        console.error('Error loading dashboard stats:', error);
-
-        this.loadEnrollmentsAndAnalytics(userId);
+        console.error('Error loading quiz attempts:', error);
+        this.quizAttempts = [];
+        this.studentService.getDashboardStats(userId).subscribe({
+          next: (stats: StudentDashboardStats) => {
+            this.dashboardStats = stats;
+            this.loadEnrollmentsAndAnalytics(userId);
+          },
+          error: (error: any) => {
+            console.error('Error loading dashboard stats:', error);
+            this.loadEnrollmentsAndAnalytics(userId);
+          }
+        });
       }
     });
   }
@@ -117,7 +138,7 @@ export class Dashboard implements OnInit {
 
 
     if (!this.dashboardStats && this.enrollments && this.analytics) {
-      this.dashboardStats = this.studentService.calculateDashboardStats(this.enrollments, this.analytics);
+      this.dashboardStats = this.studentService.calculateDashboardStats(this.enrollments, this.analytics, this.quizAttempts);
     } else if (!this.dashboardStats) {
 
       this.dashboardStats = {

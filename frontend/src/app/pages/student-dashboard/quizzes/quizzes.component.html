@@ -71,7 +71,7 @@
                 </div>
                 <div class="ml-4">
                   <p class="text-sm font-medium text-gray-600">Total Quizzes</p>
-                  <p class="text-2xl font-bold text-gray-900">{{ quizAttempts.length }}</p>
+                  <p class="text-2xl font-bold text-gray-900">{{ totalQuizCount }}</p>
                 </div>
               </div>
             </div>
@@ -101,7 +101,7 @@
                 </div>
                 <div class="ml-4">
                   <p class="text-sm font-medium text-gray-600">Total Questions</p>
-                  <p class="text-2xl font-bold text-gray-900">{{ totalQuestions }}</p>
+                  <p class="text-2xl font-bold text-gray-900">{{ totalQuestionCount }}</p>
                 </div>
               </div>
             </div>
@@ -124,9 +124,9 @@
               <form (ngSubmit)="submitAllQuizAttempts()">
                 <div *ngFor="let quiz of courseQuizzes" class="border border-gray-200 rounded-lg p-4 mb-4">
                   <h4 class="text-md font-semibold text-gray-800 mb-2">{{ quiz.title }}</h4>
-                  <div *ngFor="let question of quiz.questions; let i = index" class="mb-3">
+                  <div *ngFor="let question of quiz.questions" class="mb-3">
                     <label class="block text-sm font-medium text-gray-700 mb-1">
-                      Q{{ i + 1 }}. {{ question.question }}
+                      {{ question.question }}
                     </label>
                     <ng-container *ngIf="question.type === 'MCQ'; else textInput">
                       <div *ngFor="let opt of question.options" class="flex items-center mb-1">
@@ -151,10 +151,59 @@
                     </ng-template>
                   </div>
                 </div>
-                <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700" [disabled]="submittingAttempt">
-                  Submit All Answers
-                </button>
+                <div class="flex space-x-2 mt-4">
+                  <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700" [disabled]="submittingAttempt">
+                    Submit All Answers
+                  </button>
+                  <button type="button" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600" (click)="startRetakeQuizForAll()" [disabled]="retakeQuizId">
+                    Retake Quiz
+                  </button>
+                </div>
               </form>
+              <!-- Retake mode: show only failed questions for all retakable quizzes -->
+              <div *ngIf="retakeQuizId">
+                <form (ngSubmit)="submitRetakeQuizForAll()">
+                  <div *ngFor="let quiz of courseQuizzes">
+                    <div *ngIf="canRetakeQuiz(quiz.id)">
+                      <h4 class="text-md font-semibold text-gray-800 mb-2">Retake: {{ quiz.title }}</h4>
+                      <div *ngFor="let question of getFailedQuestions(quiz)" class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                          {{ question.question }}
+                        </label>
+                        <ng-container *ngIf="question.type === 'MCQ'; else textInput">
+                          <div *ngFor="let opt of question.options" class="flex items-center mb-1">
+                            <input
+                              type="radio"
+                              [name]="'retake_' + quiz.id + '_' + question.id"
+                              [value]="opt.value"
+                              [checked]="quizAnswers[quiz.id]?.[question.id] === opt.value"
+                              (change)="setQuizAnswer(quiz.id, question.id, opt.value)"
+                              class="mr-2"
+                            />
+                            <span>{{ opt.value }}</span>
+                          </div>
+                        </ng-container>
+                        <ng-template #textInput>
+                          <input
+                            type="text"
+                            class="border rounded px-2 py-1 w-full"
+                            [value]="quizAnswers[quiz.id]?.[question.id] || ''"
+                            (input)="setQuizAnswer(quiz.id, question.id, $any($event.target).value)"
+                          />
+                        </ng-template>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex space-x-2 mt-4">
+                    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700" [disabled]="submittingAttempt">
+                      Submit Retake
+                    </button>
+                    <button type="button" (click)="cancelRetakeQuiz()" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
 
